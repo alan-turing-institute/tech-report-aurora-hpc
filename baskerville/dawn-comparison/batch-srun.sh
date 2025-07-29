@@ -7,7 +7,7 @@
 echo "## Aurora configuration script starting"
 
 # Quit on error
-set -e
+# set -e
 
 if [ ! -d ../era5-experiments/downloads ]; then
   echo "Please run the batch-download.sh script to download the data."
@@ -29,6 +29,6 @@ python -m venv venv
 
 #pip install --quiet --upgrade pip
 #pip install --quiet cdsapi
-#pip install --quiet -e ../../aurora
+#pip install --quiet -e ../../.[bask]
 
 echo "## Aurora configuration script completed"
