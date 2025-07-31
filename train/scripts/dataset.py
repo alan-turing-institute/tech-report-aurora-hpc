@@ -22,9 +22,9 @@ class AuroraDataset(Dataset):
     Args:
         data_path (Path): Directory to read in the data from.
         t (int): the number of additional timesteps to load alongside each datapoint.
-        static_data (Path): file containing the static variable data, relative to `data_path`.
-        surface_data (Path): file containing the surface-level variable data, relative to `data_path`.
-        atmos_data (Path): file containing the atmospheric variable data, relative to `data_path`.
+        static_data (str | Path | xr.Dataset): path to static variable data, relative to `data_path` or a dataset.
+        surface_data (str | Path | xr.Dataset): path to surface-level variable data, relative to `data_path` or a dataset.
+        atmos_data (str | Path | xr.Dataset): path to atmospheric variable data, relative to `data_path` or a dataset.
         use_dask (bool): Whether to use dask to load the datasets.
     """
 
