@@ -7,7 +7,7 @@ name = "aurora_hpc"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "microsoft-aurora",
+    "microsoft-aurora==1.6.0",
     "xarray",
     "cdsapi",
     "ipython",
