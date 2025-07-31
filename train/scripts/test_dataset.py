@@ -151,18 +151,18 @@ class TestDataset(unittest.TestCase):
         dataset = AuroraDataset(
             data_path=Path(self.temp_dir.name),
             t=1,
-            static_filepath=self.dummy_static,
-            surface_filepath=self.dummy_surface,
-            atmos_filepath=self.dummy_atmos,
+            static_data=self.dummy_static,
+            surface_data=self.dummy_surface,
+            atmos_data=self.dummy_atmos,
         )
         self.assertEqual(len(dataset), 30)
 
         dataset = AuroraDataset(
             data_path=Path(self.temp_dir.name),
             t=0,
-            static_filepath=self.dummy_static,
-            surface_filepath=self.dummy_surface,
-            atmos_filepath=self.dummy_atmos,
+            static_data=self.dummy_static,
+            surface_data=self.dummy_surface,
+            atmos_data=self.dummy_atmos,
         )
         self.assertEqual(len(dataset), 31)
 
@@ -174,9 +174,9 @@ class TestDataset(unittest.TestCase):
                 dataset = AuroraDataset(
                     data_path=Path(self.temp_dir.name),
                     t=in_t,
-                    static_filepath=self.dummy_static,
-                    surface_filepath=self.dummy_surface,
-                    atmos_filepath=self.dummy_atmos,
+                    static_data=self.dummy_static,
+                    surface_data=self.dummy_surface,
+                    atmos_data=self.dummy_atmos,
                 )
                 X, y = dataset[0]
                 self.assertEqual(
@@ -202,9 +202,9 @@ class TestAuroraCollateFn(unittest.TestCase):
         dataset = AuroraDataset(
             data_path=Path(self.temp_dir.name),
             t=1,
-            static_filepath=self.dummy_static,
-            surface_filepath=self.dummy_surface,
-            atmos_filepath=self.dummy_atmos,
+            static_data=self.dummy_static,
+            surface_data=self.dummy_surface,
+            atmos_data=self.dummy_atmos,
         )
         X, y = dataset[0]
 
@@ -228,9 +228,9 @@ class TestAuroraCollateFn(unittest.TestCase):
         dataset = AuroraDataset(
             data_path=Path(self.temp_dir.name),
             t=1,
-            static_filepath=self.dummy_static,
-            surface_filepath=self.dummy_surface,
-            atmos_filepath=self.dummy_atmos,
+            static_data=self.dummy_static,
+            surface_data=self.dummy_surface,
+            atmos_data=self.dummy_atmos,
         )
         data_loader = DataLoader(
             dataset=dataset,
