@@ -8,9 +8,7 @@ warnings.filterwarnings(
     "ignore", category=UserWarning, message="TypedStorage is deprecated"
 )
 
-import torch
-import torch.nn as nn
-from dataset import AuroraDataset, aurora_collate_fn
+from aurora_hpc.dataset import AuroraDataset
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -39,6 +37,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+
 def main(download_path: str, static: str, surface: str, atmos: str):
     download_path = Path(download_path)
 
@@ -46,9 +45,9 @@ def main(download_path: str, static: str, surface: str, atmos: str):
     dataset = AuroraDataset(
         data_path=download_path,
         t=1,
-        static_filepath=Path(static),
-        surface_filepath=Path(surface),
-        atmos_filepath=Path(atmos),
+        static_data=Path(static),
+        surface_data=Path(surface),
+        atmos_data=Path(atmos),
     )
 
     print("parsing data...")
@@ -61,7 +60,11 @@ def main(download_path: str, static: str, surface: str, atmos: str):
     print("Atmospheric variables: {}".format(", ".join(input.atmos_vars.keys())))
 
     metadata = input.metadata
-    print("Atmospheric levels: {}".format(", ".join([str(level) for level in input.metadata.atmos_levels])))
+    print(
+        "Atmospheric levels: {}".format(
+            ", ".join([str(level) for level in input.metadata.atmos_levels])
+        )
+    )
     print("Latitudes: {}".format(len(input.metadata.lat)))
     print("Longitudes: {}".format(len(input.metadata.lon)))
     print()
@@ -70,5 +73,6 @@ def main(download_path: str, static: str, surface: str, atmos: str):
     for index, (input, _) in enumerate(dataset):
         for time in input.metadata.time:
             print("Batch {}: {}".format(index, time))
+
 
 main(args.download_path, args.static, args.surface, args.atmos)
