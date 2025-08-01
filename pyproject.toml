@@ -5,15 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aurora_hpc"
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.10, <3.12"
 dependencies = [
     "microsoft-aurora==1.6.0",
-    "xarray==2023.1.0",
-    "cdsapi",
     "ipython",
+    "cdsapi",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pre-commit",
+]
+bask = [
+    "xarray==2023.1.0",
+    "numpy<2.0.0",
+]
+dawn = [
+    "xarray==2025.4.0",
+    "numpy<3.0.0",
 ]
