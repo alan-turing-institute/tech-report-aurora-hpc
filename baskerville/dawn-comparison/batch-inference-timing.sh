@@ -2,19 +2,19 @@
 # vim: et:ts=4:sts=4:sw=4
 #SBATCH --qos turing
 #SBATCH --account usjs9456-ati-test
-#SBATCH --time 0:30:00
+#SBATCH --time 0:30:0
 #SBATCH --nodes 1
-#SBATCH --gpus 1
+#SBATCH --gpus 4
 #SBATCH --cpus-per-gpu 36
-#SBATCH --mem 76G
-#SBATCH --job-name auroria-comparison
-#SBATCH --output log-comparison.txt
+#SBATCH --constraint=a100_80
+#SBATCH --job-name aurora-comparison
+#SBATCH --output log-inference-timing.txt
 
 # Execute using:
-# sbatch ./batch-comparison.sh
+# sbatch ./batch-inference-timing.sh
 
 echo
-echo "## Aurora comparison script starting"
+echo "## Aurora inference timing script starting"
 
 # Quit on error
 set -e
@@ -52,11 +52,12 @@ nvidia-smi dmon -o TD -s puct -d 1 > log-comparison-gpu.txt &
 vmstat -t 1 -y > log-comparison-cpu.txt &
 
 # Perform the prediction
-# already done!
-# python inference-timing.py --nsteps 28 --save --output_file preds-bask.pkl
+# do this 4 times, once per GPU
+for i in {0..3}; do
+    CUDA_VISIBLE_DEVICES=$i python inference-timing.py -n 28 --save -o preds_$i.pkl > inference_28_steps_$i.txt &
+done
 
-# Generate graphs
-python compare-results.py
+wait
 
 echo
 echo "## Tidying up"
@@ -64,4 +65,4 @@ echo "## Tidying up"
 deactivate
 
 echo
-echo "## Aurora comparison script completed"
+echo "## Aurora inference-timing script completed"
