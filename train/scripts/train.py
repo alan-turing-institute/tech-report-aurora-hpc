@@ -17,14 +17,24 @@ import torch.nn as nn
 from torch.distributed import all_gather, destroy_process_group, init_process_group
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from torch.distributed.fsdp import ShardingStrategy
+from torch.distributed.fsdp.wrap import ModuleWrapPolicy
 from torch.utils.data import DataLoader, DistributedSampler
 
 from aurora import Aurora
+from aurora.model.swin3d import (
+    Basic3DDecoderLayer,
+    Basic3DEncoderLayer,
+    Swin3DTransformerBackbone,
+    Swin3DTransformerBlock,
+)
 from aurora_hpc.aurora_loss import mae
 from aurora_hpc.dataset import AuroraDataset, aurora_collate_fn
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--xpu", action="store_true", help="boolean of whether to use xpu")
+parser.add_argument(
+    "--shard", action="store_true", help="whether to use full_shard strategy"
+)
 parser.add_argument(
     "--download_path",
     "-d",
@@ -77,7 +87,7 @@ else:
     LOCAL_RANK = int(os.environ["LOCAL_RANK"])
 
 
-def main(download_path: str, xpu: bool = False):
+def main(download_path: str, shard: bool, xpu: bool = False):
     if xpu:
         comms_backend = "ccl"
         device_type = "xpu"
@@ -109,13 +119,20 @@ def main(download_path: str, xpu: bool = False):
 
     download_path = Path(download_path)
 
+    policy = ModuleWrapPolicy(
+        {Swin3DTransformerBackbone, Basic3DEncoderLayer, Basic3DDecoderLayer}
+    )
+
     print("preparing model...")
     model.configure_activation_checkpointing()
     model = FSDP(
         model,
         device_id=LOCAL_RANK,
         use_orig_params=True,
-        sharding_strategy=ShardingStrategy.NO_SHARD,
+        sharding_strategy=(
+            ShardingStrategy.FULL_SHARD if shard else ShardingStrategy.NO_SHARD
+        ),
+        auto_wrap_policy=policy if shard else None,
     )
     model.train()
 
@@ -193,4 +210,4 @@ def main(download_path: str, xpu: bool = False):
     print("done")
 
 
-main(args.download_path, xpu=args.xpu)
+main(args.download_path, shard=args.shard, xpu=args.xpu)
