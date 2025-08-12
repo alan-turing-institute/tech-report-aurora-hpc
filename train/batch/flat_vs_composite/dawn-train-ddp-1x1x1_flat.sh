@@ -40,9 +40,9 @@ export ZES_ENABLE_SYSMAN=1
 # Otherwise we're told to.
 export CCL_ZE_IPC_EXCHANGE=sockets
 
-#mpirun -host ${SLURM_JOB_NODELIST} bash -c 'stdbuf -o0 xpu-smi dump --rawdata --device $SLURM_JOB_GPUS -m 0,1,2,21,22 > gpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' & 
+#mpirun -host ${SLURM_JOB_NODELIST} bash -c 'stdbuf -o0 xpu-smi dump --rawdata --device $SLURM_JOB_GPUS -m 0,1,2,21,22 > gpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' &
 
-mpirun -prepend-rank -n 1 -ppn 1 python train_xpu_ed.py -d ../../dawn/era5/era_v_inf/
+mpirun -prepend-rank -n 1 -ppn 1 python train_ed.py -d ../../dawn/era5/era_v_inf/ --xpu
 
 deactivate
 popd

@@ -24,6 +24,7 @@ from aurora_hpc.aurora_loss import mae
 from aurora_hpc.dataset import AuroraDataset, aurora_collate_fn
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--xpu", action="store_true", help="boolean of whether to use xpu")
 parser.add_argument(
     "--download_path",
     "-d",
@@ -32,46 +33,57 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-import intel_extension_for_pytorch as ipex
-import oneccl_bindings_for_pytorch  # has side-effects
+if args.xpu:
+    import intel_extension_for_pytorch as ipex
+    import oneccl_bindings_for_pytorch  # has side-effects
 
-# unset affinity mask
-os.environ.pop("ZE_AFFINITY_MASK", None)
+    # unset affinity mask
+    os.environ.pop("ZE_AFFINITY_MASK", None)
 
-# PMI_SIZE set by mpirun
-WORLD_SIZE = int(os.environ["PMI_SIZE"])
-os.environ["WORLD_SIZE"] = str(WORLD_SIZE)
+    # PMI_SIZE set by mpirun
+    WORLD_SIZE = int(os.environ["PMI_SIZE"])
+    os.environ["WORLD_SIZE"] = str(WORLD_SIZE)
 
-# PMI_RANK set by mpirun
-RANK = os.environ["PMI_RANK"]
-os.environ["RANK"] = RANK
+    # PMI_RANK set by mpirun
+    RANK = os.environ["PMI_RANK"]
+    os.environ["RANK"] = RANK
 
-# MPI_LOCALRANKID provenance unknown
-LOCAL_RANK = int(os.environ["MPI_LOCALRANKID"])
-print(f"{LOCAL_RANK=}", flush=True)
+    # MPI_LOCALRANKID provenance unknown
+    LOCAL_RANK = int(os.environ["MPI_LOCALRANKID"])
+    print(f"{LOCAL_RANK=}")
 
-# get the master address
-numbers = re.compile("\d+")
-nodelist_env = os.getenv("SLURM_JOB_NODELIST")
+    # get the master address
+    numbers = re.compile("\d+")
+    nodelist_env = os.getenv("SLURM_JOB_NODELIST")
 
-# e.g. "pvc-s-[24-25]"
-try:
-    # If we're running on >1 node, we should set the MASTER_ADDR
-    # to the hostname of rank 0.
-    prefix = nodelist_env[0 : nodelist_env.index("[")]
-    nodelist = tuple(prefix + x for x in numbers.findall(nodelist_env))
-    master_addr = nodelist[0]
-except ValueError:
-    # We must be running on a single node.
-    master_addr = "0.0.0.0"
+    # e.g. "pvc-s-[24-25]"
+    try:
+        # If we're running on >1 node, we should set the MASTER_ADDR
+        # to the hostname of rank 0.
+        prefix = nodelist_env[0 : nodelist_env.index("[")]
+        nodelist = tuple(prefix + x for x in numbers.findall(nodelist_env))
+        master_addr = nodelist[0]
+    except ValueError:
+        # We must be running on a single node.
+        master_addr = "0.0.0.0"
 
-os.environ["MASTER_ADDR"] = master_addr
-os.environ["MASTER_PORT"] = "29876"
-USE_SUBDEVICES = os.environ.get("USE_SUBDEVICES", False)
+    os.environ["MASTER_ADDR"] = master_addr
+    os.environ["MASTER_PORT"] = "29876"
+    USE_SUBDEVICES = os.environ.get("USE_SUBDEVICES", False)
 
-def main(download_path: str):
-    comms_backend = "ccl"
-    device_type = "xpu"
+else:
+    WORLD_SIZE = int(os.environ["WORLD_SIZE"])
+    RANK = int(os.environ["RANK"])
+    LOCAL_RANK = int(os.environ["LOCAL_RANK"])
+
+
+def main(download_path: str, xpu: bool = False):
+    if xpu:
+        comms_backend = "ccl"
+        device_type = "xpu"
+    else:
+        comms_backend = "nccl"
+        device_type = "cuda"
 
     time_start_total = time.time()
 
@@ -90,9 +102,9 @@ def main(download_path: str):
     model = Aurora(
         use_lora=False,  # Model was not fine-tuned.
         autocast=True,  # Use AMP.
-        encoder_depths=(12,12,12),
+        encoder_depths=(12, 12, 12),
         encoder_num_heads=(4, 8, 16),
-        decoder_depths=(12,12,12),
+        decoder_depths=(12, 12, 12),
         decoder_num_heads=(16, 8, 4),
         embed_dim=256,
         num_heads=8,
@@ -173,9 +185,16 @@ def main(download_path: str):
         avg_time = sum([sum(t[1:]) for t in gathered_times]) / sum(
             [len(times[1:]) for t in gathered_times]
         )
-        print(f"Average time per epoch (ignoring first): {avg_time} seconds", flush=True)
-        print(f"Effective time for an epoch: {avg_time / WORLD_SIZE} seconds", flush=True)
-        print(f"Equivalent training speed: {WORLD_SIZE / avg_time} epochs per seconds", flush=True)
+        print(
+            f"Average time per epoch (ignoring first): {avg_time} seconds", flush=True
+        )
+        print(
+            f"Effective time for an epoch: {avg_time / WORLD_SIZE} seconds", flush=True
+        )
+        print(
+            f"Equivalent training speed: {WORLD_SIZE / avg_time} epochs per seconds",
+            flush=True,
+        )
         total_time = sum([sum(t) for t in gathered_times])
         total_no_epochs = sum([len(t) for t in gathered_times])
         print(f"Total time for {total_no_epochs} epochs: {total_time}", flush=True)
@@ -187,4 +206,4 @@ def main(download_path: str):
     print("done", flush=True)
 
 
-main(args.download_path)
+main(args.download_path, xpu=args.xpu)
