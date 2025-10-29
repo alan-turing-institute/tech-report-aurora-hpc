@@ -9,7 +9,7 @@ from pathlib import Path
 import cdsapi
 
 # Data will be downloaded here.
-download_path = Path("../era5-experiments/downloads")
+download_path = Path("../../downloads")
 
 c = cdsapi.Client()
 
@@ -51,7 +51,7 @@ if not (download_path / "2023-01-01-08-surface-level.nc").exists():
             ],
             "year": "2023",
             "month": "01",
-            "day": ["01", "02", "03", "04", "05", "06", "07", "08"],
+            "day": ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },
@@ -89,7 +89,7 @@ if not (download_path / "2023-01-01-08-atmospheric.nc").exists():
             ],
             "year": "2023",
             "month": "01",
-            "day": ["01", "02", "03", "04", "05", "06", "07", "08"],
+            "day": ["01", "02", "03", "04", "05", "06", "07", "08", "09"],
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },

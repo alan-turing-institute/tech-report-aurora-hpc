@@ -6,6 +6,7 @@ import os
 import re
 import time
 import warnings
+from datetime import datetime as dt
 from pathlib import Path
 
 warnings.filterwarnings(
@@ -96,6 +97,7 @@ def main(download_path: str, shard: bool, xpu: bool = False):
         device_type = "cuda"
 
     time_start_total = time.time()
+    print(f"Script start time: {dt.now()}")
 
     print("Initialising process group with backend", comms_backend, flush=True)
     # ToDo Run 2 or more processes.
@@ -108,6 +110,7 @@ def main(download_path: str, shard: bool, xpu: bool = False):
     device = f"{device_type}:{LOCAL_RANK}"
     print(f"Using {device=}")
 
+    print(f"Start time loading model: {dt.now()}")
     print("loading model...")
     model = Aurora(
         use_lora=False,  # Model was not fine-tuned.
@@ -116,6 +119,7 @@ def main(download_path: str, shard: bool, xpu: bool = False):
     model.load_checkpoint("microsoft/aurora", "aurora-0.25-pretrained.ckpt")
     if not xpu:
         torch.cuda.set_device(LOCAL_RANK)
+    print(f"End time loading model: {dt.now()}")
 
     download_path = Path(download_path)
 
@@ -139,14 +143,20 @@ def main(download_path: str, shard: bool, xpu: bool = False):
     # AdamW, as used in the paper.
     optimizer = torch.optim.AdamW(model.parameters())
 
+    time_start_loading_data = time.time()
+    print(f"Start time loading data: {dt.now()}")
     print("loading data...")
     dataset = AuroraDataset(
         data_path=download_path,
         t=1,
         static_data=Path("static.nc"),
-        surface_data=Path("2023-01-surface-level.nc"),
-        atmos_data=Path("2023-01-atmospheric.nc"),
+        surface_data=Path("2023-01-surface-level-34.nc"),
+        atmos_data=Path("2023-01-atmospheric-34.nc"),
     )
+    time_end_loading_data = time.time()
+    print(f"End time loading data: {dt.now()}")
+    print(f"Time loading data: {time_end_loading_data - time_start_loading_data}")
+
     sampler = DistributedSampler(dataset)
     data_loader = DataLoader(
         dataset=dataset,
@@ -188,6 +198,7 @@ def main(download_path: str, shard: bool, xpu: bool = False):
             optimizer.step()
 
         time_end = time.time()
+        print(f"Time for 1 iteration: {time_end - time_start}")
         times.append(time_end - time_start)
         time_start = time.time()
 
