@@ -42,6 +42,8 @@ def main(
     print("Loading data...")
     dataset = AuroraDataset(
         data_path=download_path,
+        surface_data="2023-01-surface-level-34.nc",
+        atmos_data="2023-01-atmospheric-34.nc",
         t=1,
         **kwargs
     )  # Defaults to the 2023-01-01 dataset, use kwargs to specify other files.
