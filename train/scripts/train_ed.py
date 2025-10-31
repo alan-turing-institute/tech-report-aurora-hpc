@@ -38,13 +38,6 @@ parser.add_argument(
     help="encoder/decoder depth",
     default=12,
 )
-parser.add_argument(
-    "--grad_accum",
-    "-g",
-    type=int,
-    help="gradient accumulation steps; must be a multiple of the world size",
-    default=1,
-)
 args = parser.parse_args()
 
 if args.xpu:
@@ -89,8 +82,6 @@ else:
     WORLD_SIZE = int(os.environ["WORLD_SIZE"])
     RANK = int(os.environ["RANK"])
     LOCAL_RANK = int(os.environ["LOCAL_RANK"])
-
-assert args.grad_accum % WORLD_SIZE == 0
 
 def main(download_path: str, encoder_depth: int, xpu: bool = False):
     if xpu:
@@ -149,8 +140,8 @@ def main(download_path: str, encoder_depth: int, xpu: bool = False):
         data_path=download_path,
         t=1,
         static_data=Path("static.nc"),
-        surface_data=Path("2023-01-surface-level.nc"),
-        atmos_data=Path("2023-01-atmospheric.nc"),
+        surface_data=Path("2023-01-surface-level-34.nc"),
+        atmos_data=Path("2023-01-atmospheric-34.nc"),
     )
     sampler = DistributedSampler(dataset)
 
@@ -164,7 +155,7 @@ def main(download_path: str, encoder_depth: int, xpu: bool = False):
 
     times = []
 
-    n_batches_per_optim = args.grad_accum // WORLD_SIZE
+    n_batches_per_optim = 8 / WORLD_SIZE
 
     time_start = time.time()
     for batch, (X, y) in enumerate(data_loader):
