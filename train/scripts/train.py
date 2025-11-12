@@ -179,23 +179,29 @@ def main(download_path: str, shard: bool, xpu: bool = False):
         with torch.autocast(device_type=device_type):
             print("performing forward pass...")
             pred = model(X)
+            print(f"finished model forward: {time.time()-time_start}")
 
             # only one of these is necessary
             pred = pred.to(device)
+            print(f"finished pred to device: {time.time()-time_start}")
             y = y.to(device)
+            print(f"finished y to device: {time.time()-time_start}")
 
             # mean absolute error of one variable
             print("calculating loss...")
 
             # Todo: Are pred's of type PyTree and does it matter?
             loss = mae(pred, y)
-
+            print(f"finished loss calc: {time.time()-time_start}")
+        
         print("performing backward pass...")
         loss.backward()
+        print(f"finished loss backward: {time.time()-time_start}")
 
         if batch % n_batches_per_optim == 0:
             print("optimizing...")
             optimizer.step()
+            print(f"finished optimizer step: {time.time()-time_start}")
 
         time_end = time.time()
         print(f"Time for 1 iteration: {time_end - time_start}")
