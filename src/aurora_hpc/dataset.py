@@ -36,6 +36,7 @@ class AuroraDataset(Dataset):
         surface_data: str | Path | xr.Dataset = Path("2023-01-01-surface-level.nc"),
         atmos_data: str | Path | xr.Dataset = Path("2023-01-01-atmospheric.nc"),
         use_dask: bool = False,
+        len_max: int = None,
     ):
         self.t = t
 
@@ -80,6 +81,8 @@ class AuroraDataset(Dataset):
         self.length = (
             len(torch.from_numpy(self.surf_vars_ds["t2m"].values)) - self.t - 1
         )
+        if len_max:
+            self.length = min(self.length, len_max)
 
     def _get_batch(self, timerange):
         """Returns a batch covering a time range.
