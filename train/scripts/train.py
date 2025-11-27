@@ -150,8 +150,9 @@ def main(download_path: str, shard: bool, xpu: bool = False):
         data_path=download_path,
         t=1,
         static_data=Path("static.nc"),
-        surface_data=Path("2023-01-surface-level-34.nc"),
-        atmos_data=Path("2023-01-atmospheric-34.nc"),
+        surface_data=Path("2023-01-surface-level-36.nc"),
+        atmos_data=Path("2023-01-atmospheric-36.nc"),
+        len_max=32,
     )
     time_end_loading_data = time.time()
     print(f"End time loading data: {dt.now()}")

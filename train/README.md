@@ -3,7 +3,9 @@
 The code in this folder is for performing various training related experiments.
 See below for instructions for how to run them.
 
-## Running within an interactive session
+## Baskerville
+
+### Running within an interactive session
 
 To run the interactives session scripts, first ensure you're on a compute node by running the following or an equiavlent `srun` command (you'll need to update the QoS and account details):
 
@@ -11,7 +13,7 @@ To run the interactives session scripts, first ensure you're on a compute node b
 srun --qos turing --account usjs9456-ati-test --time 1:00:00 --nodes 1 --gpus 1 --cpus-per-gpu 36 --mem 16384 --pty /bin/bash
 ```
 
-## Queued jobs using sbatch
+### Queued jobs using sbatch
 
 All sbatch scripts have a QoS and account details set in them.
 The parameters used for these will depend on your account and so should be adjusted accordingly.
@@ -21,7 +23,7 @@ The parameters used for these will depend on your account and so should be adjus
 #SBATCH --account usjs9456-ati-test
 ```
 
-## Baskerville training using FSDP
+### Training using FSDP
 
 The case of a single node can be run within an srun interactive session or scheduled using the sbatch scripts.
 
@@ -63,7 +65,7 @@ sbatch bask-train-fsdp-4x4.sh
 This is set up to run on 2 nodes with 2 GPUs and to perform just a single run.
 Edit the script header to test other combinations.
 
-## Baskerville bandwidth
+### Bandwidth
 
 All bandwidth experiments should be run within an interactive session and from within the `aurora-hpc/train/batch` directory.
 
@@ -78,3 +80,72 @@ To run the GPU bandwidth experiments:
 ```sh
 ./bask-srun-gpubw.sh
 ```
+
+## Dawn
+
+The Dawn scripts are all done through batch jobs, no interactive session scripts.
+
+All scripts should be run directly from the `aurora-hpc/train/batch` directory.
+
+
+### Creating the virtual environment
+
+Before performing any training the virtual environment should be created by running the following script:
+
+```sh
+cd aurora-hpc/train/batch
+sbatch dawn-create-venv.sh
+```
+
+This will create a virtual environment in the `aurora-hpc/dawn/environments/venv_3_11_11` directory.
+
+## Download the data
+
+The data must also be downloaded before training can commence.
+This also requires that you've created an account with the Climate Data Store and created a `.cdsapirc` file in your homd directory with the following contents:
+
+```sh
+url: https://cds.climate.copernicus.eu/api
+key: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxx
+```
+
+Here the `x` values must be replaced by your access key.
+You can find out more about how to do this on the [Aurora ERA5 page](https://microsoft.github.io/aurora/example_era5.html).
+
+Once you've set up your access key you can then download the data directly to Dawn using the following sbatch script.
+
+```sh
+aurora-hpc/dawn/batch/dawn-download-era5.sh
+```
+
+If successful this will result in the following files being downoaded to the `aurora-hpc/dawn/era5/era_v_inf` directory.
+
+```
+2023-01-atmospheric-36.nc
+2023-01-surface-level-36.nc
+static.nc
+```
+
+### Training
+
+Once the virtual environment is set up, the training can be executed by queueing the appropriate script for the number of nodes and GPUs you want to use.
+
+The following example is for one node and one GPU:
+
+```sh
+cd aurora-hpc/train/batch
+sbatch dawn-train-ddp-1x1.sh
+```
+
+The other available configurations are the following:
+
+```sh
+dawn-train-ddp-1x1.sh # One node with one GPU (one GPU total)
+dawn-train-ddp-1x4.sh # One node with four GPUs (four GPUs total)
+dawn-train-ddp-2x4.sh # Two nodes with two GPUs each (four GPUs total)
+dawn-train-ddp-2x8.sh # Two nodes with four GPUs each (eight GPUs total)
+dawn-train-ddp-4x4.sh # Four nodes with one GPU each (four GPUs total)
+dawn-train-ddp-4x8.sh # Four nodes with two GUUs each (eight GPUs total)
+```
+
+After each run the output logs will be sent to the `aurora-hpc/train/batch/results` directory.
