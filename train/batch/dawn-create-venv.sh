@@ -25,7 +25,7 @@ echo "## Loading modules"
 
 module purge
 module load default-dawn
-module load lua
+module load lua/5.3.6/gcc/vlcrcwvl
 module load intel-oneapi-ccl/2021.14.0
 module load intel-oneapi-mpi/2021.14.1
 module load intel-oneapi-mkl/2025.0.1
@@ -33,7 +33,7 @@ module load intel-oneapi-mkl/2025.0.1
 echo
 echo "## Configuring environment"
 
-VENV_DIR=../../dawn/environments/venv_3_11_11
+VENV_DIR=../../dawn/environments/venv_3_11_11_rhel8
 
 echo
 echo "## Initialising virtual environment"
@@ -44,6 +44,7 @@ python3.11 -m venv $VENV_DIR
 echo
 echo "## Details"
 echo
+echo "Date: $(date)"
 echo "Nodes: ${SLURM_JOB_NUM_NODES}"
 echo "GPUs per node: ${SLURM_GPUS_PER_NODE}"
 echo "Tasks per node: ${SLURM_NTASKS_PER_NODE}"
