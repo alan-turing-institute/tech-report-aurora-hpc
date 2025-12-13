@@ -1,0 +1,52 @@
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}%
+\contentsline {section}{\numberline {2}Aims}{5}{section.2}%
+\contentsline {section}{\numberline {3}Summary}{6}{section.3}%
+\contentsline {section}{\numberline {4}Set up}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Summary}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Dawn hardware}{7}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Dawn device hierarchy}{7}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Python environment}{9}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Modules}{9}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}Partition Information}{10}{subsubsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.3}Baskerville hardware}{10}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Python environment}{10}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Modules}{11}{subsubsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.4}ERA5 dataset}{11}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Inference}{12}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Summary}{12}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Experimental setup}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Results}{13}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Reproducibility between runs}{16}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Time comparison}{18}{subsubsection.5.3.2}%
+\contentsline {section}{\numberline {6}Fine-tuning}{20}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Summary}{20}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Loss function}{21}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Single GPU}{21}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Multi GPU}{22}{subsection.6.4}%
+\contentsline {subsubsection}{\numberline {6.4.1}Distributed Data Parallel (DDP)}{22}{subsubsection.6.4.1}%
+\contentsline {subsubsection}{\numberline {6.4.2}Resource utilisation}{24}{subsubsection.6.4.2}%
+\contentsline {subsubsection}{\numberline {6.4.3}Effect of model size on training time}{24}{subsubsection.6.4.3}%
+\contentsline {subsubsection}{\numberline {6.4.4}Fully Sharded Data Parallel (FSDP)}{27}{subsubsection.6.4.4}%
+\contentsline {section}{\numberline {7}Data transfer}{27}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Summary}{28}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Results}{28}{subsection.7.2}%
+\contentsline {subsubsection}{\numberline {7.2.1}Data transfer with ERA5 data}{29}{subsubsection.7.2.1}%
+\contentsline {section}{\numberline {8}Calculation accuracy}{29}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Summary}{30}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Experimental setup}{30}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Results}{31}{subsection.8.3}%
+\contentsline {section}{\numberline {9}Broader experiences using Dawn}{34}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Summary}{34}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Data centre upgrade}{34}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Support}{35}{subsection.9.3}%
+\contentsline {section}{\numberline {A}System configuration}{36}{appendix.A}%
+\contentsline {section}{\numberline {B}Calculation accuracy}{39}{appendix.B}%
+\contentsline {subsection}{\numberline {B.1}Floating point formats}{39}{subsection.B.1}%
+\contentsline {subsection}{\numberline {B.2}Matrix generation}{40}{subsection.B.2}%
+\contentsline {subsection}{\numberline {B.3}Errors in smaller matrices}{41}{subsection.B.3}%
+\contentsline {subsection}{\numberline {B.4}CPU calculation comparison}{41}{subsection.B.4}%
+\contentsline {subsection}{\numberline {B.5}Different seeds}{43}{subsection.B.5}%
+\contentsline {subsection}{\numberline {B.6}Multiplication and addition in isolation}{43}{subsection.B.6}%
+\contentsline {subsection}{\numberline {B.7}Flat \textit {vs.} Composite}{48}{subsection.B.7}%
+\contentsline {subsection}{\numberline {B.8}Reproducibility}{49}{subsection.B.8}%
+\babel@toc {british}{}\relax 
