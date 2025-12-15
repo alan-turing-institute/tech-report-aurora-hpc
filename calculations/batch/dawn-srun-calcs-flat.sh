@@ -24,7 +24,7 @@ module load intel-oneapi-mkl/2025.0.1
 echo "## Configuring environment"
 
 # Merge tiles into full devices, for extra memory.
-export ZE_FLAT_DEVICE_HIERARCHY=COMPOSITE
+export ZE_FLAT_DEVICE_HIERARCHY=FLAT
 
 # Avoid too many open file handles error.
 ulimit -n 1000000
@@ -44,16 +44,16 @@ echo "## Initialising virtual environment"
 python3.11 -m venv venv
 . ./venv/bin/activate
 
-pip install --quiet --upgrade pip
-pip install --quiet torch==2.7.0 torchvision==0.22.0 torchaudio==2.7.0 --index-url https://download.pytorch.org/whl/xpu
-pip install --quiet intel-extension-for-pytorch==2.7.10+xpu oneccl_bind_pt==2.7.0+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
-pip install --quiet matplotlib
+#pip install --quiet --upgrade pip
+#pip install --quiet torch==2.7.0 torchvision==0.22.0 torchaudio==2.7.0 --index-url https://download.pytorch.org/whl/xpu
+#pip install --quiet intel-extension-for-pytorch==2.7.10+xpu oneccl_bind_pt==2.7.0+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+#pip install --quiet matplotlib
 
 echo "## Running calculations"
 
 # Perform the calculations
-python calculate.py -a "xpu" -p "XPU " -o "calcs-dawn-xpu.csv"
-python calculate.py -a "cpu" -p "CPU (DAWN) " -o "calcs-dawn-cpu.csv"
+python calculate.py -a "xpu" -p "XPU " -o "calcs-dawn-xpu-flat.csv"
+python calculate.py -a "cpu" -p "CPU (DAWN) " -o "calcs-dawn-cpu-flat.csv"
 
 echo "## Tidying up"
 

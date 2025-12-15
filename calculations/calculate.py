@@ -7,6 +7,7 @@
 import torch
 import torch.nn as nn
 import argparse
+import time
 
 class Calculations:
     """A class for performing calculation error comparisons."""
@@ -15,6 +16,8 @@ class Calculations:
     data_lines = []
     steps = []
     prefix = ""
+    values_file = ""
+    timings_file = ""
     precisions = [torch.float64, torch.float32, torch.float16, torch.bfloat16]
     precision_names = {
         torch.float64: "fp64",
@@ -26,7 +29,7 @@ class Calculations:
         "cpu": [torch.float64, torch.float32]
     }
 
-    def __init__(self, size, scalefactor, seed, device, prefix):
+    def __init__(self, size, scalefactor, seed, device, prefix, fileout):
         """Initialise the calculations, including setting the random seed.
 
         Consequently a new instance should be created for each calculation run.
@@ -36,9 +39,14 @@ class Calculations:
         self.size = size
         self.device = device
         self.prefix = prefix
+        self.fileout = fileout
         self.scalefactor = scalefactor
         if self.device in self.device_precisions:
             self.precisions = self.device_precisions[self.device]
+        self.values_file = self.suffix_path(self.fileout, "-results")
+        self.timings_file = self.suffix_path(self.fileout, "-timings")
+        self.create_values_file()
+        self.create_timings_file()
 
     def random_check(self):
         """Print a list of 10 random numbers to the console.
@@ -130,6 +138,59 @@ class Calculations:
                 values = ",".join([format(data_line[1][pos].item(), ".10e") for data_line in self.data_lines])
                 fh.write(("{},{}\n".format(step, values)))
 
+    def create_values_file(self):
+        """Creates a value file to append value lines to
+
+        Creates a value file ready to collect values during the experiments.
+        """
+        with open(self.values_file, 'w') as fh:
+            header = ",".join("\"{}\"".format(column) for column in ["device", "precision", "name", "size", "count", "cpu", "gpu"])
+            fh.write("{}\n".format(header))
+
+    def append_values(self, device, precision, name, size, count, value_cpu, value):
+        """Appends a line of values to the value file.
+
+        Appends the given CPU and GPU values as a new line to the end of the values file.
+
+        Arguments:
+            device: the name of the device being tested
+            precision: the precision of the values used for the test
+            name: the name of the test
+            size: the size of matrices being used
+            count: the number of steps performed
+            value_cpu: the final value as calculated by the CPU
+            value: the final value as calculated by the GPU
+        """
+        with open(self.values_file, 'a') as fh:
+            data = ",".join(["\"{}\"".format(device), "\"{}\"".format(precision), "\"{}\"".format(name), str(size), str(count), str(value_cpu), str(value)])
+            fh.write("{}\n".format(data))
+
+    def create_timings_file(self):
+        """Creates a timings file to append timing lines to
+
+        Creates a timings file ready to collect timings during the experiments.
+        """
+        with open(self.timings_file, 'w') as fh:
+            header = ",".join("\"{}\"".format(column) for column in ["device", "precision", "name", "size", "count", "cpu", "gpu"])
+            fh.write("{}\n".format(header))
+
+    def append_timings(self, device, precision, name, size, count, duration):
+        """Appends a line of values to the value file.
+
+        Appends the given CPU and GPU values as a new line to the end of the values file.
+
+        Arguments:
+            device: the name of the device being tested
+            precision: the precision of the values used for the test
+            name: the name of the test
+            size: the size of matrices being used
+            count: the number of steps performed
+            duration: the duration of the run
+        """
+        with open(self.timings_file, 'a') as fh:
+            data = ",".join(["\"{}\"".format(device), "\"{}\"".format(precision), "\"{}\"".format(name), str(size), str(count), str(duration)])
+            fh.write("{}\n".format(data))
+
     def index_path(self, filename, seed):
         """Creates a file name based on a seed value.
 
@@ -182,6 +243,8 @@ class Calculations:
             result_cpu = torch.eye(self.size, dtype=torch.float64, device="cpu")
             result = torch.eye(self.size, dtype=precision, device=self.device)
             prev = 0
+            start_time = time.time()
+            count = 0
             for steps in range(16 * self.scalefactor, 513 * self.scalefactor, 16 * self.scalefactor):
                 if fuzz:
                     multiplier_cpu, multiplier_device = self.get_rand_matrix(0.002 * scale_mul, 0.999 * scale_mul)
@@ -190,10 +253,15 @@ class Calculations:
                     steps_list.append(steps)
                 result_cpu = matrix_operation(result_cpu, multiplier_cpu, accumulator_cpu, steps - prev, torch.float64, "cpu")
                 result = matrix_operation(result, multiplier_device, accumulator_device, steps - prev, precision, self.device)
-                value = result_cpu[0,0].item()
                 mse = self.matrix_compare(result_cpu, result.cpu())
                 mse_lists[pos].append(mse.cpu())
                 prev = steps
+                count += 1
+
+            end_time = time.time()
+            duration = end_time - start_time
+            self.append_values(self.device, self.precision_names[precision], name, self.size, count, result_cpu[0, 0].item(), result[0, 0].item())
+            self.append_timings(self.device, self.precision_names[precision], name, self.size, count, duration)
 
         self.steps = steps_list
         for pos, precision in enumerate(self.precisions):
@@ -227,33 +295,33 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--accelerator", "-a", type=str, default="auto", choices=["auto", "cpu", "cuda", "xpu"], help="Accelerator to use")
     parser.add_argument("--prefix", "-p", type=str, default="", help="Graph line name prefix")
-    parser.add_argument("--fileout", "-o", type=str, required=True, help="Filename to output the data to")
+    parser.add_argument("--fileout", "-o", type=str, required=True, help="Filename to output the error results to")
     args = parser.parse_args()
 
-    calc = Calculations(16, 10, 42, args.accelerator, args.prefix)
+    calc = Calculations(16, 10, 42, args.accelerator, args.prefix, args.fileout)
     calc.random_check()
 
-    calc = Calculations(16, 1, 42, args.accelerator, args.prefix)
+    calc = Calculations(16, 1, 42, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-mad-16x16")
     calc.generate_data_mad(fileout)
 
-    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix)
+    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-mad-1024x1024-s42")
     calc.generate_data_mad(fileout)
 
-    calc = Calculations(1024, 1, 43, args.accelerator, args.prefix)
+    calc = Calculations(1024, 1, 43, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-mad-1024x1024-s43")
     calc.generate_data_mad(fileout)
 
-    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix)
+    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-mul-1024x1024")
     calc.generate_data_mul(fileout)
 
-    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix)
+    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-add-1024x1024")
     calc.generate_data_add(fileout)
 
-    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix)
+    calc = Calculations(1024, 1, 42, args.accelerator, args.prefix, args.fileout)
     fileout = calc.suffix_path(args.fileout, "-mad-fuzz-1024x1024")
     calc.generate_data_mad_fuzz(fileout)
 
