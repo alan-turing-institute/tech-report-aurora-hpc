@@ -76,9 +76,12 @@ echo "Node list: ${SLURM_JOB_NODELIST}"
 echo "GPUs: ${SLURM_JOB_GPUS}"
 
 echo
-echo "## Running model"
+echo "## Starting data collection"
 
-# mpirun -host ${SLURM_JOB_NODELIST} bash -c 'stdbuf -o0 xpu-smi dump --rawdata --device $SLURM_JOB_GPUS -m 0,1,2,21,22 > gpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' &
+mpirun bash -c 'stdbuf -o0 xpu-smi dump --device $SLURM_JOB_GPUS -m 0,1,2,22 > ../batch/results/gpu-${SLURM_JOB_ID}-${SLURM_PROCID}.txt' &
+
+echo
+echo "## Running model"
 
 # https://github.com/alan-turing-institute/hpc-landscape/blob/5ec2e4ff5c8358db467fbeb4c71902aeb9b9af7c/DAWN/hints-and-tips/sbatch_example.sh#L93
 # mpirun -prepend-rand -n 4 bash -c 'stdbuf -o0 xpumcli dump -t 0,1 -m 0,1,2,5 -i 1 > gpu-${PMI_RANK}.out'

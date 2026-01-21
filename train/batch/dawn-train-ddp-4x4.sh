@@ -76,9 +76,12 @@ echo "Node list: ${SLURM_JOB_NODELIST}"
 echo "GPUs: ${SLURM_JOB_GPUS}"
 
 echo
-echo "## Running model"
+echo "## Starting data collection"
 
-# mpirun -host ${SLURM_JOB_NODELIST} bash -c 'stdbuf -o0 xpu-smi dump --rawdata --device $SLURM_JOB_GPUS -m 0,1,2,21,22 > gpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' &
+mpirun bash -c 'stdbuf -o0 xpu-smi dump --device $SLURM_JOB_GPUS -m 0,1,2,22 > ../batch/results/gpu-${SLURM_JOB_ID}-${SLURM_PROCID}.txt' &
+
+echo
+echo "## Running model"
 
 START=$(date +%s)
 for i in {0..3}; do
