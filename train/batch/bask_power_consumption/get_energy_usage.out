@@ -1,0 +1,11 @@
+Configurations found: {'4x4', '1x1', '2x4', '2x8', '1x4'}
+Energy consumption for 1x1:
+221071.76 Joules over 1057.00 seconds using 209.15 Watts average power.
+Energy consumption for 1x4:
+118982.26 Joules over 1212.00 seconds using 98.17 Watts average power.
+Energy consumption for 2x4:
+86398.03 Joules over 715.00 seconds using 120.84 Watts average power.
+Energy consumption for 2x8:
+90887.62 Joules over 1075.00 seconds using 84.55 Watts average power.
+Energy consumption for 4x4:
+76522.08 Joules over 552.00 seconds using 138.63 Watts average power.
