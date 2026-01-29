@@ -9,6 +9,12 @@ TDP_1550_GPU = 600  # Watts
 all_out_files = glob("./*/*.out")
 all_out_files = [pathlib.Path(f) for f in all_out_files]
 
+# configs are like 1x1, 1x4, 2x4, 2x8, 4x4, etc.
+# sort all_out_files by configuration in order of total no of GPUs used
+all_out_files.sort(
+    key=lambda f: int(f.parent.name.split("x")[0]) * int(f.parent.name.split("x")[1])
+)
+
 # Extract unique configurations from log files
 configs = set(f.parent.name for f in all_out_files)
 print(f"Configurations found: {configs}")
