@@ -1,11 +1,13 @@
-Configurations found: {'4x4', '1x1', '2x4', '2x8', '1x4'}
+Configurations found: {'2x4', '1x1', '2x8', '4x4', '1x4'}
 Energy consumption for 1x1:
 221071.76 Joules over 1057.00 seconds using 209.15 Watts average power.
 Energy consumption for 1x4:
-118982.26 Joules over 1212.00 seconds using 98.17 Watts average power.
+475929.04 Joules over 1212.00 seconds using 98.17 Watts average power.
 Energy consumption for 2x4:
-86398.03 Joules over 715.00 seconds using 120.84 Watts average power.
+345592.12 Joules over 715.00 seconds using 120.84 Watts average power.
 Energy consumption for 2x8:
-90887.62 Joules over 1075.00 seconds using 84.55 Watts average power.
+727100.95 Joules over 1075.00 seconds using 84.55 Watts average power.
 Energy consumption for 4x4:
-76522.08 Joules over 552.00 seconds using 138.63 Watts average power.
+306088.32 Joules over 552.00 seconds using 138.63 Watts average power.
+[['1x1', np.float64(221071.76310483873), 1057.0, np.float64(209.15020161290323)], ['1x4', np.float64(475929.03614457825), 1212.0, np.float64(98.17018072289156)], ['2x4', np.float64(345592.11794576986), 715.0, np.float64(120.8364048761433)], ['2x8', np.float64(727100.9486535845), 1075.0, np.float64(84.54662193646331)], ['4x4', np.float64(306088.3225850415), 552.0, np.float64(138.6269576925007)]]
+Energy consumption summary saved to bask_energy_consumption_summary.csv
