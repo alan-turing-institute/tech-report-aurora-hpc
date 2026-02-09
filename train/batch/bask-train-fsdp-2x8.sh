@@ -56,20 +56,27 @@ pip install --quiet ../../.[bask]
 echo
 echo "## Details"
 echo
-echo "Nodes: ${SLURM_GPUS_PER_NODE}"
+echo "Date: $(date)"
+echo "Nodes: ${SLURM_JOB_NUM_NODES}"
 echo "GPUs per node: ${SLURM_GPUS_PER_NODE}"
 echo "Primary address: ${PRIMARY_ADDR}"
 echo "Primary port: ${PRIMARY_PORT}"
+echo "Tasks per node: ${SLURM_NTASKS_PER_NODE}"
+echo "CPUS per task: ${SLURM_CPUS_PER_TASK}"
+echo "Working directory: $(realpath ${PWD})"
+echo "Node list: ${SLURM_JOB_NODELIST}"
+echo "GPUs: ${SLURM_JOB_GPUS}"
 
 echo
 echo "## Running model"
 
 # Track GPU and CPU metrics
-nvidia-smi dmon -o TD -s puct -d 1 > log-train-gpu.txt &
-vmstat -t 1 -y > log-train-cpu.txt &
+mpirun --host ${SLURM_NODELIST} bash -c 'stdbuf -o0 nvidia-smi dmon -o TD -s puct -d 1 > ../batch/results/gpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' &
+mpirun --host ${SLURM_NODELIST} bash -c 'stdbuf -o0 vmstat -t 1 > ../batch/results/cpu-${SLURM_JOB_ID}-${OMPI_COMM_WORLD_RANK}.txt' &
 
 # Perform the prediction
 # Repeat this 4 times so we get better logs
+START=$(date +%s)
 for i in {0..3}; do
     srun bash -c \
         'python -m torch.distributed.run \
@@ -81,6 +88,16 @@ for i in {0..3}; do
         train.py \
         -d ../../downloads'
 done
+END=$(date +%s)
+ELAPSED=$((${END}-${START}))
+
+echo
+echo "## Details post"
+echo
+echo "Time completed: $(date --iso-8601=ns)"
+echo "Epoch start: ${START}"
+echo "Epoch end: ${END}"
+echo "Elapsed: ${ELAPSED} seconds"
 
 echo
 echo "## Tidying up"

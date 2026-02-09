@@ -66,8 +66,8 @@ echo
 echo "## Running model"
 
 # Track GPU and CPU metrics
-nvidia-smi dmon -o TD -s puct -d 1 > log-train-gpu.txt &
-vmstat -t 1 -y > log-train-cpu.txt &
+mpirun bash -c 'stdbuf -o0 nvidia-smi dmon -o TD -s puct -d 1 > ../batch/results/gpu-${SLURM_JOB_ID}-${SLURM_PROCID}.txt' &
+mpirun bash -c 'stdbuf -o0 vmstat -t 1 > ../batch/results/cpu-${SLURM_JOB_ID}-${SLURM_PROCID}.txt' &
 
 # Perform the prediction
 srun bash -c \

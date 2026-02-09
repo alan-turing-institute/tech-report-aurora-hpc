@@ -38,7 +38,7 @@ if not (download_path / "static.nc").exists():
 print("Static variables downloaded!")
 
 # Download the surface-level variables.
-if not (download_path / "2023-01-01-08-surface-level.nc").exists():
+if not (download_path / "2023-01-01-08-surface-level-36.nc").exists():
     c.retrieve(
         "reanalysis-era5-single-levels",
         {
@@ -55,12 +55,12 @@ if not (download_path / "2023-01-01-08-surface-level.nc").exists():
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },
-        str(download_path / "2023-01-01-08-surface-level.nc"),
+        str(download_path / "2023-01-01-08-surface-level-36.nc"),
     )
 print("Surface-level variables downloaded!")
 
 # Download the atmospheric variables.
-if not (download_path / "2023-01-01-08-atmospheric.nc").exists():
+if not (download_path / "2023-01-01-08-atmospheric-36.nc").exists():
     c.retrieve(
         "reanalysis-era5-pressure-levels",
         {
@@ -93,6 +93,6 @@ if not (download_path / "2023-01-01-08-atmospheric.nc").exists():
             "time": ["00:00", "06:00", "12:00", "18:00"],
             "format": "netcdf",
         },
-        str(download_path / "2023-01-01-08-atmospheric.nc"),
+        str(download_path / "2023-01-01-08-atmospheric-36.nc"),
     )
 print("Atmospheric variables downloaded!")
