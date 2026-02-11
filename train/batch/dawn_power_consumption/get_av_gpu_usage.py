@@ -80,5 +80,8 @@ for cfg, log_files in grouped_logs.items():
 
         cfg_avg_stats = pd.concat([cfg_avg_stats, stats_df], axis=0)
 
-    cfg_avg_stats = cfg_avg_stats.groupby(cfg_avg_stats.index).mean()
+    grouped = cfg_avg_stats.groupby(cfg_avg_stats.index)
+    cfg_avg_stats = grouped.mean()
+    cfg_avg_stats.loc["min"] = grouped.min().loc["min"]
+    cfg_avg_stats.loc["max"] = grouped.max().loc["max"]
     cfg_avg_stats.to_csv(f"{cfg}_avg_gpu_stats.csv")
