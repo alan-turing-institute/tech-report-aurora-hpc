@@ -25,6 +25,12 @@ dawn_power_consumption/
 
 Where `<config>` is e.g. `1x1`, `1x4`, `2x4`, `4x8` (nodes x GPUs per node).
 
+## Python environment
+
+For the analysis, you will need a python environment with the following packages:
+- `pandas`
+- `numpy`
+
 ## Running the analysis
 
 From each `*_power_consumption/` directory:
