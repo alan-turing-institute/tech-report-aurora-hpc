@@ -1,4 +1,4 @@
-Configurations found: {'2x4', '1x4', '1x1', '4x8', '2x8', '4x4'}
+Configurations found: {'1x1', '1x4', '4x8', '4x4', '2x4', '2x8'}
 Energy consumption for 1x1:
 1330046.65 Joules over 3443.00 seconds using 386.30 Watts average power.
 Energy consumption for 1x4:
@@ -11,5 +11,5 @@ Energy consumption for 2x8:
 2394120.58 Joules over 913.00 seconds using 327.78 Watts average power.
 Energy consumption for 4x8:
 4152903.62 Joules over 861.00 seconds using 301.46 Watts average power.
-[['1x1', np.float64(1330046.6452493656), 3443.0, np.float64(386.3045731191884)], ['1x4', np.float64(1892885.9264966948), 1298.0, np.float64(364.57741265344663)], ['2x4', np.float64(3047125.1453634584), 1194.0, np.float64(319.00388875245585)], ['4x4', np.float64(5423694.817227792), 1179.0, np.float64(287.51562856381423)], ['2x8', np.float64(2394120.5762702497), 913.0, np.float64(327.78211613776693)], ['4x8', np.float64(4152903.6173611176), 861.0, np.float64(301.45932181773503)]]
+[['1x1', 1330046.6452493656, 3443.0, 386.3045731191884], ['1x4', 1892885.9264966948, 1298.0, 364.57741265344663], ['2x4', 3047125.1453634584, 1194.0, 319.00388875245585], ['4x4', 5423694.817227792, 1179.0, 287.51562856381423], ['2x8', 2394120.5762702497, 913.0, 327.78211613776693], ['4x8', 4152903.6173611176, 861.0, 301.45932181773503]]
 Energy consumption summary saved to dawn_energy_consumption_summary.csv
