@@ -61,6 +61,7 @@ energy_df = pd.DataFrame(
     energy_data,
     columns=["Config", "Energy (J)", "Elapsed Time (S)", "Mean Power (W)"],
 )
+energy_df["Avg Energy per run (J)"] = energy_df["Energy (J)"] / 4  # 4 runs per config
 
 energy_df = energy_df.round(2)
 energy_df.to_csv("dawn_energy_consumption_summary.csv", index=False)
