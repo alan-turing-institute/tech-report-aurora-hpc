@@ -414,7 +414,7 @@ For the same training exercise as in tables \ref{tab:fine-tune-Dawn} and \ref{ta
 
 Overall Dawn consumed between 3.3 times and 17.7 times more GPU energy than Baskerville for the same training exercise. This is driven by both higher mean power draw (between 1.9 and 3.9 times higher) and, in most configurations, longer elapsed time (between 0.85 and 3.26 times longer).
 
-In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (55\,267.94 J) and one node with one GPU total on Dawn (332\,511.66 J). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (181\,775.24 J) and four nodes with four GPUs total on Dawn (1\,355\,923.71 J).
+In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (55\,267.94 J) and one node with one GPU total on Dawn (332\,511.66 J). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (181\,773.66 J) and four nodes with four GPUs total on Dawn (1\,355\,921.92 J).
 
 For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (84.55 W) and four nodes with four GPUs total on Dawn (287.52 W), while the highest values occur at one node with one GPU total on both systems (209.15 W on Baskerville; 386.30 W on Dawn).
 
@@ -425,9 +425,9 @@ For average power draw per GPU, the lowest values are at two nodes with eight GP
         \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{4.3cm}{\raggedleft Avg energy used per training run /J}& \parbox{3.2cm}{\raggedleft Avg power draw per GPU /W} \\ \hline
         1 & 1 & 55\,267.94 & 209.15 \\
         1 & 4 & 118\,982.26 & 98.17 \\
-        2 & 4 & 86\,398.03 & 120.84 \\
-        4 & 4 & 76\,522.08 & 138.63 \\
-        2 & 8 & 181\,775.24 & 84.55 \\
+        2 & 4 & 86\,393.69 & 120.83 \\
+        4 & 4 & 76\,523.08 & 138.63 \\
+        2 & 8 & 181\,773.66 & 84.55 \\
     \end{tabular}
     \caption{GPU energy usage for the same training exercise on Baskerville.}
     \label{tab:energy-bask}
@@ -438,11 +438,11 @@ For average power draw per GPU, the lowest values are at two nodes with eight GP
     \hbadness=99999
     \begin{tabular}{rr|rr|r}
         \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{4.3cm}{\raggedleft Avg energy used per training run /J}& \parbox{3.2cm}{\raggedleft Avg power draw per GPU /W} & \parbox{3.0cm}{\raggedleft Energy ratio \\ \,}\\ \hline
-        1 & 1 & 332\,511.66 & 386.30 & 6.01 \\
+        1 & 1 & 332\,511.66 & 386.30 & 6.02 \\
         1 & 4 & 473\,221.48 & 364.58 & 3.98 \\
         2 & 4 & 761\,781.29 & 319.00 & 8.82 \\
-        4 & 4 & 1\,355\,923.71 & 287.52 & 17.72 \\
-        2 & 8 & 598\,530.15 & 327.78 & 3.29 \\
+        4 & 4 & 1\,355\,921.92 & 287.52 & 17.72 \\
+        2 & 8 & 598\,843.44 & 327.95 & 3.29 \\
     \end{tabular}
     \caption{GPU energy usage for the same training exercise on Dawn. Energy ratio is Dawn energy divided by Baskerville energy.}
     \label{tab:energy-dawn}
