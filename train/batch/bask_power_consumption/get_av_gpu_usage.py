@@ -16,6 +16,7 @@ grouped_logs = {
 }
 for cfg, log_files in grouped_logs.items():
     cfg_avg_stats = pd.DataFrame()
+    cfg_acc_stats = pd.DataFrame()
 
     for log_file in log_files:
         # column names
@@ -87,9 +88,12 @@ for cfg, log_files in grouped_logs.items():
         stats_df.to_csv(f"{log_file}_stats.csv")
 
         cfg_avg_stats = pd.concat([cfg_avg_stats, stats_df], axis=0)
+        cfg_acc_stats = pd.concat([cfg_acc_stats, df[["SM (%)", "Power (W)"]]], axis=0)
 
     grouped = cfg_avg_stats.groupby(cfg_avg_stats.index)
     cfg_avg_stats = grouped.mean()
     cfg_avg_stats.loc["min"] = grouped.min().loc["min"]
     cfg_avg_stats.loc["max"] = grouped.max().loc["max"]
     cfg_avg_stats.to_csv(f"{cfg}_avg_gpu_stats.csv")
+
+    cfg_acc_stats.describe(percentiles=[]).to_csv(f"{cfg}_acc_gpu_stats.csv")
