@@ -193,3 +193,6 @@ log-*.txt.stats
 baskerville/dawn-comparison/*.png
 baskerville/dawn-comparison/*.pdf
 baskerville/dawn-comparison/dawn-code
+
+train/batch/dawn_power_consumption/[0-9]x[0-9]/*
+train/batch/bask_power_consumption/[0-9]x[0-9]/*
