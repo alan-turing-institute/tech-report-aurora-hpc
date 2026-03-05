@@ -45,7 +45,7 @@ for out_file in all_out_files:
     else:
         raise ValueError(f"Node/GPU info not found in {out_file}")
 
-    stats_df = pd.read_csv(f"./{cfg}_avg_gpu_stats.csv", index_col=0)
+    stats_df = pd.read_csv(f"./{cfg}_acc_gpu_stats.csv", index_col=0)
 
     mean_power_watt = stats_df.loc["mean", "Power (W)"]
 
