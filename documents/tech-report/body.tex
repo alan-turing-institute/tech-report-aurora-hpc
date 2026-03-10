@@ -405,7 +405,7 @@ We collected metrics for the training runs using two nodes with four GPUs on eac
 
 In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit 100\%. Memory utilisation fluctuated but reached at least 76\% on the 80 GiB GPUs of Baskerville ({\it i.e.\/} 61 GiB per GPU).
 
-Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. During the most active periods power consumption of the Intel GPUs reached 1600 Watts (the maximum) on all eight devices (using \textit{composite} device hierarchy). Memory utilisation consistently reached above 60\% with a maximum of 66.82\% ({\it i.e.\/} 85.5 GiB per GPU).
+In comparison memory utilisation on Dawn consistently reached above 60\% with a maximum of 66.82\% ({\it i.e.\/} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
 
 \subsubsection{Energy usage comparison}
 \label{section:energy-comparison}
