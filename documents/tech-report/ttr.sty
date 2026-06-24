@@ -1,0 +1,140 @@
+%     ttn.sty: A LaTeX style for Turing Technical Notes.
+%     Copyright (c) 2026 The Alan Turing Institute
+
+%     This program is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+
+%     This program is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+
+%     You should have received a copy of the GNU General Public License
+%     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+%     James Geddes (jgeddes@turing.ac.uk)
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ttr}[2025-07-24 Turing Technical Reports]
+%%
+%% Turing Technical Report Series
+%% Layout for title page and front matter
+%
+%% USAGE NOTES
+%% -----------
+%
+% - After cloning this repository, make $HOME/texmf/tex/latex/ttr (on
+%   Linux) or $HOME/Library/texmf/tex/latex/ttr (MacOS) and make a
+%   symbolic link there to the file ttr.sty. Then run texhash.
+%   After this, you can use \usepackage{ttr} in your LaTeX file.
+%
+%  - Uses fontspec, so you will need to use lualatex or xelatex
+%
+%% NOTES
+%% -----
+%
+% The Turing's formatting guidelines divide the page into 21 equal
+% columns (which turn out to be 1cm wide). These columns are grouped
+% to produce variations on the layout.
+%
+% For example, a "4-column layout" has four groups of 4
+% columns, plus three, 1-column gutters between the groups, plus
+% 1-column margins; for a total of 21 columns.
+%
+% There are 4-column, 5-column, and 10-column layours. There is no
+% "1-column layout", but even if there were, 1 cm margins are far too
+% small. So we are starting with the 10-column layout and including
+% the first and last groups in the margin.
+%
+% That gives 3-cm margins, and a 15cm text width (equivalent to 7
+% groups of 1 column plus 1 gutter, plus another group).
+%
+\RequirePackage[a4paper]{geometry}
+%%
+\newlength{\turingcolwd} % 1/21 of the paper width
+\newlength{\turingcolht} % 1/21 of the paper height
+\setlength{\turingcolwd}{0.04762\paperwidth}
+\setlength{\turingcolht}{0.04762\paperheight}
+%%
+%% Assumes A-series paper size
+\geometry{left=3\turingcolwd, top=3\turingcolht}
+\geometry{textwidth=15\turingcolwd}
+\geometry{marginparsep=1\turingcolwd, marginparwidth=2\turingcolwd}
+%%
+%% Fonts and typography
+%%
+%% Turing's house font is Neue Haas Unica, which we use for sans-serif
+%% If you don't have that, Helvetica is an acceptable alternative
+%%
+%% The "Concrete Roman" and "AMS Euler" fonts were used by Donald Knuth for his
+%% book "Concrete Mathematics". AMS Euler was created by Hermann Zapf.
+\RequirePackage{fontspec}
+\RequirePackage{microtype}
+%% Explicit naming of the OTF font file is needed to avoid an error from
+%% xdvipdfmx when loading the font using xu-cheng/texlive-action
+\setmainfont[Numbers=OldStyle]{cmunorm.otf}
+\IfFontExistsTF{Neue Haas Unica Pro}{
+  \setsansfont{Neue Haas Unica Pro}}{
+  \IfFontExistsTF{Helvetica}{
+    \setsansfont{Helvetica}}{
+    \setsansfont{CMU Bright}}}
+\RequirePackage[math-style=upright]{unicode-math}
+% \usepackage[math-style=upright]{unicode-math}
+%% Explicit naming of the OTF font file is needed for use with Ubuntu
+\setmathfont{Euler-Math.otf}
+% \setmathfont[range={"2A74}]{Asana Math} % fallback for "::="
+\RequirePackage[sf,bf]{titlesec}
+%%
+%% Turing font sizes "follow a Fibonacci sequence"
+%% That is: ..., 8pt, 13pt, 21pt, ...
+%% Those are much larger jumps than the standard LaTeX sizes,
+%% which are ..., 10pt, 11pt, 12pt, ... (for 11pt as normalsize),
+%% and do not seem appropriate for documents.
+%%
+%% Here we stick with LaTeX's defaults.
+%%
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize{12}{15}%
+   \abovedisplayskip 12\p@ \@plus3\p@ \@minus6\p@
+   \abovedisplayshortskip \z@ \@plus4\p@
+   \belowdisplayshortskip 6\p@ \@plus4\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\normalsize
+% \renewcommand\small{%
+%    \@setfontsize\small{8}{9.2}%
+%    \abovedisplayskip 8\p@ \@plus2\p@ \@minus4\p@
+%    \abovedisplayshortskip \z@ \@plus3\p@
+%    \belowdisplayshortskip 4\p@ \@plus3\p@ \@minus3\p@
+%    \def\@listi{\leftmargin\leftmargini%                TODO: Fix these
+%                \topsep 9\p@ \@plus3\p@ \@minus5\p@
+%                \parsep 4.5\p@ \@plus2\p@ \@minus\p@
+%                \itemsep \parsep}%
+%    \belowdisplayskip \abovedisplayskip
+% }
+% \renewcommand\footnotesize{%
+%   \@setfontsize\footnotesize{5}{6}%
+%    \abovedisplayskip 5\p@ \@plus2\p@ \@minus1\p@
+%    \abovedisplayshortskip \z@ \@plus2\p@
+%    \belowdisplayshortskip 5\p@ \@plus2\p@ \@minus1\p@
+%    \def\@listi{\leftmargin\leftmargini%                TODO: Fix these
+%                \topsep 6\p@ \@plus2\p@ \@minus2\p@
+%                \parsep 3\p@ \@plus2\p@ \@minus\p@
+%                \itemsep \parsep}%
+%    \belowdisplayskip \abovedisplayskip
+% }
+% \renewcommand\scriptsize{\@setfontsize\scriptsize{5}{6}}  % SAME AS footnotesize
+% \renewcommand\tiny{\@setfontsize\tiny{3}{4}}
+% \renewcommand\large{\@setfontsize\large{21}{24}}
+% \renewcommand\Large{\@setfontsize\Large{34}{39}}
+% \renewcommand\LARGE{\@setfontsize\LARGE{56}{56}}
+% \renewcommand\huge{\@setfontsize\huge{89}{89}}
+% \renewcommand\Huge{\@setfontsize\Huge{144}{144}}
+
+
+
+% Local Variables:
+% TeX-engine: luatex
+% End:
