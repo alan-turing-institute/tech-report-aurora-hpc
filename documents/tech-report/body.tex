@@ -217,17 +217,13 @@ We can see from the top row of Figure \ref{fig:errors} that both Dawn and Basker
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-Dawn.pdf}
-\caption{\label{fig:pvg-Dawn}Comparison of prediction {\it vs.} ground
-  truth after 7 day rollout for the two-meter temperature in the range
-   (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Dawn.}
+\caption{\label{fig:pvg-Dawn}Comparison of prediction {\it vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Dawn.}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-bask.pdf}
-\caption{\label{fig:pvg-bask}Comparison of prediction {\it vs.} ground
-  truth after 7 day rollout for the two-meter temperature in the range
-   (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Baskerville.}
+\caption{\label{fig:pvg-bask}Comparison of prediction {\it vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Baskerville.}
 \end{figure}
 
 For this work the key comparison isn't between the predicted values and ground truth but rather between the two systems. From the bottom left plot, we see the RMSE between Dawn and Baskerville predictions is \qty{0.0936902}{\kelvin}, which gives an overall quantification of the impact that running on different systems and different configurations can have. Finally the RMSE between the ground truth results on Dawn and Baskerville is zero, which is to be expected since this is a subtraction between values loaded from the ERA5 data.
@@ -307,12 +303,7 @@ For all inference timings, we exclude the time for the first time-step due to se
 
 On Dawn, running inference using \textit{flat} device hierarchy gave an average time-step of 6.21 seconds. The total time for doing a rollout of 28 steps was 185.29 seconds and the total time for running the inference code, including loading data and the Aurora model, was 248.45 seconds. Running inference using \textit{composite} device hierarchy gave an average step time of 6.72 seconds. The total time for doing a rollout of 28 steps was 199.70 seconds and the total time for running the inference code was 262.76 seconds.
 
-For comparison, running the same inference steps on Baskerville gave
-an average step time of 6.09 seconds. The total time for all 28 steps
-was 180.54 seconds. The total run time, including data and model
-loading, was 255.48 seconds. Given the small variation between runs,
-these results are broadly in line with those from Dawn, suggesting
-similar overall performance. Table \ref{tab:inference} summarises these results.
+For comparison, running the same inference steps on Baskerville gave an average step time of 6.09 seconds. The total time for all 28 steps was 180.54 seconds. The total run time, including data and model loading, was 255.48 seconds. Given the small variation between runs, these results are broadly in line with those from Dawn, suggesting similar overall performance. Table \ref{tab:inference} summarises these results.
 
 \begin{table}[t]
     \centering
