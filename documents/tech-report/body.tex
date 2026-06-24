@@ -1,3 +1,4 @@
+% -*- TeX-engine: luatex; fill-column: 101; eval: (auto-fill-mode -1); eval: (visual-fill-column-mode 1); eval: (visual-line-mode 1); eval: (adaptive-wrap-prefix-mode 1) -*-
 %% EDITOR: Cover sheet created separately
 % \begin{titlepage}
 % \includepdf{diagrams/tech-report-title-page}
@@ -375,7 +376,7 @@ We proceeded to run fine-tuning on both Dawn and Baskerville using 34 time-steps
 
 On Dawn and Baskerville, we ran multi-GPU fine-tuning with unsharded FSDP (equivalent to using DDP) using one node (one and four GPUs total), two nodes (two and eight GPUs total) and four nodes (four GPUs total). We did this using the PyTorch FSDP class and setting the FSDP sharding strategy to \texttt{NO\_SHARD}.
 
-For these runs, we used a batch size of one ({\it i.e.} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
+For these runs, we used a batch size of one ({\it i.e.,} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
 
 Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab:fine-tune-bask}. Comparison of these two tables shows that Dawn is consistently running around 3 times more slowly than Baskerville.
 
@@ -425,9 +426,9 @@ As an aside, comparing the results for ``Wall-clock time per iteration'', we not
 
 We collected metrics for the training runs using two nodes with four GPUs on each.
 
-In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit 100\%. Memory utilisation fluctuated but reached at least 76\% on the 80 GiB GPUs of Baskerville ({\it i.e.\/} 61 GiB per GPU).
+In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville ({\it i.e.,} 61 GiB per GPU).
 
-In comparison memory utilisation on Dawn consistently reached above 60\% with a maximum of 66.82\% ({\it i.e.\/} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
+In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} ({\it i.e.,} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
 
 \subsubsection{Energy usage comparison}
 \label{section:energy-comparison}
@@ -436,9 +437,9 @@ For the same training exercise as in tables \ref{tab:fine-tune-Dawn} and \ref{ta
 
 Overall Dawn consumed between 3.3 times and 17.7 times more GPU energy than Baskerville for the same training exercise. This is driven by both higher mean power draw (between 1.9 and 3.9 times higher) and, in most configurations, longer elapsed time (between 0.85 and 3.26 times longer).
 
-In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (55\,267.94 J) and one node with one GPU total on Dawn (332\,511.66 J). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (181\,773.66 J) and four nodes with four GPUs total on Dawn (1\,355\,921.92 J).
+In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (\qty{55267.94}{\joule}) and one node with one GPU total on Dawn (\qty{332511.66}{\joule}). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (\qty{181773.66}{\joule}) and four nodes with four GPUs total on Dawn (\qty{1355921.92}{\joule}).
 
-For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (84.55 W) and four nodes with four GPUs total on Dawn (287.52 W), while the highest values occur at one node with one GPU total on both systems (209.15 W on Baskerville; 386.30 W on Dawn).
+For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (\qty{84.55}{\watt}) and four nodes with four GPUs total on Dawn (\qty{287.52}{\watt}), while the highest values occur at one node with one GPU total on both systems (\qty{209.15}{\watt} on Baskerville; \qty{386.30}{\watt} on Dawn).
 
 \begin{table}[t]
     \centering
@@ -489,12 +490,12 @@ To find out whether this device hierarchy had any performance penalty, we measur
 
 To do this, we created a range of smaller Aurora models by varying encoder and decoder depths using the \texttt{encoder\_depths} and \texttt{decoder\_depths} arguments, respectively. In each case, we also reduced the number embedding dimension to 256, the numbers of heads in encoder and decoder layers to (4, 8, 16) and (16, 8, 4), respectively, and number of heads in aggregation and de-aggregation blocks to 8. All other parameters were kept as default. We ran this code on 1 node using 1 GPU.
 
-Using encoder and decoder depths of $(x, x, x)$, an $x$ of 3 gives a model of roughly the same size as \texttt{AuroraSmall} (approx 300 MiB) and a value of 33 gives a model of roughly the same size as the standard Aurora (approx. 3 GiB). \textit{Flat} hierarchy ran out of memory for $x$ values of 14 and above.
+Using encoder and decoder depths of $(x, x, x)$, an $x$ of 3 gives a model of roughly the same size as \texttt{AuroraSmall} (approx 300 MiB) and a value of 33 gives a model of roughly the same size as the standard Aurora (approx.\ 3 GiB). \textit{Flat} hierarchy ran out of memory for $x$ values of 14 and above.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.9\linewidth]{diagrams/flat-vs-composite.pdf}
-    \caption{Backprop Time {\it vs.\/} Model Size}
+    \caption{Backprop Time \textit{vs.}\ Model Size}
     \label{fig:backprop-timings}
 \end{figure}
 
@@ -541,7 +542,7 @@ More information on multi-stack architectures can be found in the Intel oneAPI o
 
 \subsubsection{Fully Sharded Data Parallel (FSDP)}
 
-With the \texttt{FULL\_SHARD} strategy, we have been able to reduce maximum GPU memory utilisation from approximately 66\% to 55\%. This uses a \texttt{ModuleWrapPolicy} to shard the encoder/decoder layers.
+With the \texttt{FULL\_SHARD} strategy, we have been able to reduce maximum GPU memory utilisation from approximately \qty{66}{\percent} to \qty{55}{\percent}. This uses a \texttt{ModuleWrapPolicy} to shard the encoder/decoder layers.
 
 Attempts to shard more layer types have been found to give errors such as ``Inconsistent compute device and \texttt{device\_id} on rank 1: xpu:0 vs xpu:1''.  Attempts to use FSDPv2's \texttt{fully\_shard} wrapper function have resulted in \texttt{UR\_RESULT\_ERROR\_OUT\_OF\_RESOURCES} errors. Therefore, some further work is needed to understand how much more optimisation can be found with model and optimiser sharding.
 
@@ -573,12 +574,13 @@ To compare platforms, we generated random tensors and pushed them to the GPU, wi
 
 \begin{table}[t]
     \centering
-    \hbadness=99999
-    \begin{tabular}{rrr}
-         Tensor Size (MiB) & Dawn Bandwidth (MiB/s) & Bask Bandwidth (MiB/s) \\ \hline
+    \begin{tabular}{@{}rrr@{}} \toprule
+      \shortstack[r]{Tensor Size\\ (MiB)}
+      & \shortstack[r]{Dawn Bandwidth\\ (MiB/s)}
+      & \shortstack[r]{Bask Bandwidth\\ (MiB/s)} \\ \midrule
           1 & 6\,162 & 3\,939 \\
   128 & 43\,620 & 9\,846\\
-          1024 & 46\,876 & 10\,645\\
+          1024 & 46\,876 & 10\,645\\ \bottomrule
     \end{tabular}
     \caption{Comparison of CPU to GPU/XPU bandwidth.}
     \label{tab:xpu-gpu-bandwidth}
@@ -588,11 +590,13 @@ Using the \texttt{dd} command to read ERA5 files gives us some sense of the file
 
 \begin{table}[t]
     \centering
-    \hbadness=99999
-    \begin{tabular}{rrrr}
-         \parbox{3cm}{File Size (MiB) \\ \,} & \parbox{3cm}{Cached (Y/N) \\ \,} & \parbox{3.5cm}{Dawn Bandwidth (GiB/s)} &  \parbox{3.3cm}{Bask Bandwidth (GiB/s)} \\ \hline
+    \begin{tabular}{@{}rrrr@{}} \toprule
+        \shortstack[r]{File Size\\ (MiB)} 
+      & \shortstack[r]{Cached\\ (Y/N)} 
+      & \shortstack[r]{Dawn Bandwidth\\ (GiB/s)}
+      & \shortstack[r]{Bask Bandwidth\\ (GiB/s)} \\ \midrule
            423 & N & 0.5 & 1.7 \\
-   423 & Y & 7 & 5.5 \\
+   423 & Y & 7 & 5.5 \\ \bottomrule
     \end{tabular}
     \caption{Comparison of file-system bandwidth.}
     \label{tab:file-system-bandwidth}
@@ -602,9 +606,10 @@ Using the \texttt{dd} command to read ERA5 files gives us some sense of the file
 
 Using an ERA5 dataset containing 7 days' worth of data, we tested the time it took to load data first to RAM and then to GPU/XPU.
 
-On Dawn, with device hierarchy set to \textit{composite}, we found that loading this dataset from disk (Lustre) to RAM took 25.6 seconds, roughly equivalent to 3.4 GiB / 25.6 s = 0.13 GiB s\textsuperscript{-1}. The average time to move each batch of training data from RAM to XPU was 0.0002 seconds, giving a total time of 0.0002 $\times$ 28 = 0.0056 s for all batches. This is roughly equivalent to 3.4 GiB / 0.0056 s = 607 GiB s\textsuperscript{-1} (assuming the full dataset is used during training).
+On Dawn, with device hierarchy set to \textit{composite}, we found that loading this dataset from disk (Lustre) to RAM took 25.6 seconds, roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{25.6}{\second} = \qty{0.13}{\gibi\byte\per\second}$. The average time to move each batch of training data from RAM to XPU was 0.0002 seconds, giving a total time of 0.0002 $\times$ 28 = 0.0056 s for all batches. This is roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{0.0056}{\second}
+= \qty{607}{\gibi\byte\per\second}$ (assuming the full dataset is used during training).
 
-On Baskerville, we found that loading this dataset from disk to RAM took 37.3 seconds, roughly equivalent to 3.4 GiB / 37.3 seconds = 0.09 GiB s\textsuperscript{-1}. The average time to move each batch of training data from RAM to GPU was 0.082 s, giving a total time of 0.082 $\times$ 28 = 2.296 s for all batches. This is roughly equivalent to 3.4 GiB / 2.296 s = 1.48 GiB s\textsuperscript{-1} (assuming the full dataset is used during training).
+On Baskerville, we found that loading this dataset from disk to RAM took 37.3 seconds, roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{37.3}{\second} = \qty{0.09}{\gibi\byte\per\second}$. The average time to move each batch of training data from RAM to GPU was 0.082 s, giving a total time of 0.082 $\times$ 28 = 2.296 s for all batches. This is roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{2.296}{\second} = \qty{1.48}{\gibi\byte\per\second}$ (assuming the full dataset is used during training).
 
 These timings suggest data transfer both from disk to RAM and from RAM to GPU/XPU are faster on Dawn, in agreement with the results above. Notably, however, RAM to XPU transfer times seem to be approximately 410 times quicker on Dawn versus Baskerville. This may suggest an error in our code or calculation of RAM to XPU transfer time as this seems exceedingly fast.
 
@@ -688,7 +693,7 @@ We also collected timing measurements for the runs. We did this using flat tilin
 
 \section{Broader experiences using Dawn}
 
-Performance and accuracy are two of the most important factors when comparing High Performance Computing systems. However they are not the only factors. In this section we discuss other factors that are less amenable to measurement, but which are nevertheless important when considering which High Performance Computing system to make use of.
+Performance and accuracy are two of the most important factors when comparing High Performance Computing systems. However they are not the only factors. In this section we discuss other factors that are less amenable to measurement, but which are nevertheless important when considering which High Performance Computing system to use.
 
 \subsection{Summary}
 
@@ -711,6 +716,7 @@ It Is clear that the Dawn team are keen for users to get the most from the syste
 
 \printbibliography
 
+\newpage
 \appendix
 
 \appendixpage
@@ -771,15 +777,19 @@ The results for these calculations are detailed in Table \ref{tab:timing-mann-wh
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{rr|rr|rrrr}
-        & & \multicolumn{2}{c|}{Average time per step (s)} & & & & \\ \hline
-        Nodes & GPUs & {\tt rhel8} & {\tt rhel9} & \parbox{1cm}{\raggedleft $U_1$} & \parbox{1cm}{\raggedleft $U_2$} & \parbox{1cm}{\raggedleft $U$} & Reject $H_0$? \\ \hline
+    \begin{tabular}{@{}ll|rr|rrrr@{}}\toprule
+      & & \multicolumn{2}{c|}{Average time per step (s)} & & & & \\ 
+      Nodes
+      & GPUs
+      & {\tt rhel8}
+      & {\tt rhel9}
+      & $U_1$ & $U_2$ & $U$ & Reject $H_0$? \\ \midrule
         1 & 1 & 18.095136 & 18.072201 & 51 & 69 & 51 & No \\
         1 & 4 & 17.780439 & 17.765742 & 61 & 59 & 59 & No \\
         2 & 4 & 19.662787 & 19.823019 & 74 & 46 & 46 & No \\
         2 & 8 & 20.016892 & 20.399696 & 63 & 57 & 57 & No \\
         4 & 4 & 19.664436 & 19.678372 & 61 & 59 & 59 & No \\
-        4 & 8 & 19.907159 & 20.116596 & 94 & 26 & 26 & No \\
+        4 & 8 & 19.907159 & 20.116596 & 94 & 26 & 26 & No \\ \bottomrule
     \end{tabular}
     \caption{Mann Whitney U Test calculations comparing the times for runs using the {\tt rhel8} and {\tt rhel9} modules}
     \label{tab:timing-mann-whitney}
@@ -802,12 +812,12 @@ Table \ref{tab:fpwidths} summarises the widths of the sections within each float
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rrrr} \hline
-        Format & Full width & Sign bit width & Significand width & Exponent width \\ \hline
+    \begin{tabular}{@{}lrrrr@{}} \toprule
+        Format & Full width & Sign bit width & Significand width & Exponent width \\ \midrule
         \fpdouble & 64 & 1 & 52 & 11 \\
         \fpsingle & 32 & 1 & 23 & 8 \\
         \fphalf & 16 & 1 & 10 & 5 \\
-        \bfhalf & 16 & 1 & 7 & 8 \\
+        \bfhalf & 16 & 1 & 7 & 8 \\ \bottomrule
     \end{tabular}
     \caption{Widths of the sections within floating point representations.}
     \label{tab:fpwidths}
@@ -951,12 +961,12 @@ For the XPU results we ran using both Flat and Composite tiling modes in order t
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{ll|r} \hline
-        Device & Tile mode & Average time per step /s \\ \hline
+    \begin{tabular}{@{}llr@{}} \toprule
+        Device & Tile mode & Average time per step /s \\ \midrule
         CPU & Flat & 0.158091989 \\
         CPU & Composite & 0.155805938 \\
         XPU & Flat & 0.046537613 \\
-        XPU & Composite & 0.046697135 \\
+        XPU & Composite & 0.046697135 \\ \bottomrule
     \end{tabular}
     \caption{Time to run calculations using different configurations.}
     \label{tab:compflattimings}
@@ -981,12 +991,12 @@ Example output captured from the first run using composite tiling can be seen in
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rr} \hline
-        Precision & CPU & XPU \\ \hline
+    \begin{tabular}{@{}lll@{}} \toprule
+        Precision & CPU & XPU \\ \midrule
         \fpdouble & 0.01825869879179093 & 0.018258698791790956 \\
         \fpsingle & 0.018260332929492966 & 0.01826033927500248 \\
         \fphalf & 0.018260353010952034 & 0.0177001953125 \\
-        \bfhalf & 0.01826071641394276 & 0.0390625 \\
+        \bfhalf & 0.01826071641394276 & 0.0390625 \\ \bottomrule
     \end{tabular}
     \caption{Top left entry in the output matrix result using Composite tiling.}
     \label{tab:compresultsfirst}
@@ -1001,18 +1011,18 @@ the output when running in Flat mode, as can be seen in Table
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rr} \hline
-        Precision & CPU & XPU \\ \hline
+    \begin{tabular}{@{}lll@{}} \toprule
+        Precision & CPU & XPU \\ \midrule
         \fpdouble & 0.01825869879179093 & 0.01825869879179094 \\
         \fpsingle & 0.018260332929492966 & 0.01826033927500248 \\
         \fphalf & 0.018260353010952034 & 0.0177001953125 \\
-        \bfhalf & 0.01826071641394276 & 0.0390625 \\
+        \bfhalf & 0.01826071641394276 & 0.0390625 \\ \bottomrule
     \end{tabular}
     \caption{Top left entry in the output matrix result using Flat tiling.}
     \label{tab:flatresultsfirst}
 \end{table}
 
-These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\textit{e.g.} Tensors being used uninitialised) rather than differences at the level of basic maths operations.
+These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\textit{e.g.,} tensors being used uninitialised) rather than differences at the level of basic maths operations.
 
 \subsection{Comparison with Aurora}
 \label{section:calccomparisonaurora}
