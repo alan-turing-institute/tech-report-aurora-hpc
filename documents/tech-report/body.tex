@@ -88,14 +88,14 @@ The main outcomes of this section will be to show the following:
 
 Dawn hardware is detailed on the \href{https://docs.hpc.cam.ac.uk/hpc/user-guide/pvc.html#hardware_}{Cambridge CSD3 pages}.
 
-Briefly, there are 256 nodes, each with four Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs. Each GPU consists of two tiles (a.k.a. {\it stacks}) that can be treated as two independent devices with 64 GiB RAM or as one device with 128 GiB RAM.
+Briefly, there are 256 nodes, each with four Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs. Each GPU consists of two tiles (a.k.a.\ \textit{stacks}) that can be treated as two independent devices with 64 GiB RAM or as one device with 128 GiB RAM.
 
 Each node has 2 $\times$ Intel\textsuperscript{\tiny\textregistered} Xeon\textsuperscript{\tiny\textregistered} Platinum 8468 CPUs, giving a total of 96 cores.
 
 \subsubsection{Dawn device hierarchy}
 \label{section:devicehierarchy}
 
-The Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs used by Dawn are based on the Ponte Vecchio architecture. These differ from the NVIDIA A100 GPUs in Baskerville in that each GPU is composed of two compute units, referred to as {\it tiles} or {\it stacks} (to avoid confusion with terminology used elsewhere, we refer to them here as {\it stacks}).
+The Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs used by Dawn are based on the Ponte Vecchio architecture. These differ from the NVIDIA A100 GPUs in Baskerville in that each GPU is composed of two compute units, referred to as \textit{tiles} or \textit{stacks} (to avoid confusion with terminology used elsewhere, we refer to them here as \textit{stacks}).
 
 Each stack is made up of eight TSMC N5 compute tiles and four Intel 7 memory tiles on an Intel 7 Foveros base die. Connected to each die are four HBM2E memory tiles and a TSMC N7 SerDes connectivity tile, connected using dense embedded interconnect bridges (EMIB). A further EMIB joins the two stacks together \cite{ponteveccio_2022}. See Figure \ref{fig:ponteveccio-stacks} for a high-level illustration of the arrangement.
 
@@ -105,9 +105,9 @@ Each stack is made up of eight TSMC N5 compute tiles and four Intel 7 memory til
 \caption{\label{fig:ponteveccio-stacks}Illustrative diagram showing the internal components of the Ponte Vecchio GPU architecture \cite{ponteveccio_2022}.}
 \end{figure}
 
-Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs can be used in two modes, called {\it hierarchies}. In the {\it flat\/} hierarchy, each stack is exposed as a separate GPU and addressable as if it were a different piece of hardware. In this mode there appear to be eight addressable GPUs on the node (2 stacks $\times$ 4 GPU cards). In the {\it composite} hierarchy, both stacks are treated as one root device composed of multiple sub-devices. Implicit scaling then means that the two stacks appear as a single GPU.
+Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs can be used in two modes, called \textit{hierarchies}. In the \textit{flat\/} hierarchy, each stack is exposed as a separate GPU and addressable as if it were a different piece of hardware. In this mode there appear to be eight addressable GPUs on the node (2 stacks $\times$ 4 GPU cards). In the \textit{composite} hierarchy, both stacks are treated as one root device composed of multiple sub-devices. Implicit scaling then means that the two stacks appear as a single GPU.
 
-For our purposes the crucial difference between the two is that in {\it flat} mode we see two devices, each with 64 GiB of addressable High Bandwidth Memory, whereas in {\it composite\/} mode we see a single device with 128 GiB of addressable High Bandwidth Memory. The standard Aurora model requires approximately 80 GiB for training and hence its use is restricted to {\it composite} mode. We consider the performance impact of this restriction in Section \ref{section:modelsize}.
+For our purposes the crucial difference between the two is that in \textit{flat} mode we see two devices, each with 64 GiB of addressable High Bandwidth Memory, whereas in \textit{composite\/} mode we see a single device with 128 GiB of addressable High Bandwidth Memory. The standard Aurora model requires approximately 80 GiB for training and hence its use is restricted to \textit{composite} mode. We consider the performance impact of this restriction in Section \ref{section:modelsize}.
 
 \subsubsection{Python environment}
 
@@ -217,13 +217,13 @@ We can see from the top row of Figure \ref{fig:errors} that both Dawn and Basker
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-Dawn.pdf}
-\caption{\label{fig:pvg-Dawn}Comparison of prediction {\it vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Dawn.}
+\caption{\label{fig:pvg-Dawn}Comparison of prediction \textit{vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Dawn.}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-bask.pdf}
-\caption{\label{fig:pvg-bask}Comparison of prediction {\it vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Baskerville.}
+\caption{\label{fig:pvg-bask}Comparison of prediction \textit{vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Baskerville.}
 \end{figure}
 
 For this work the key comparison isn't between the predicted values and ground truth but rather between the two systems. From the bottom left plot, we see the RMSE between Dawn and Baskerville predictions is \qty{0.0936902}{\kelvin}, which gives an overall quantification of the impact that running on different systems and different configurations can have. Finally the RMSE between the ground truth results on Dawn and Baskerville is zero, which is to be expected since this is a subtraction between values loaded from the ERA5 data.
@@ -246,7 +246,7 @@ Figure \ref{fig:error-comparison} shows the RMSE and difference between Dawn and
 
 To try to understand the scale of discrepancy between the two systems, we compared the errors with the RMSE for the two-meter temperature values of the IFS ENS forecasts, as provided by Weatherbench 2. In Figure \ref{fig:error-weatherbench} we draw RMSE values for two example forecasts, plotting error bars to indicate the variability reflected by the errors we measured between the Dawn and Baskerville systems. We also draw the line for the Dawn and Baskerville RMSE values for comparison.
 
-To take an explicit example, after 27 roll-out steps (162 hours) IFS ENS (mean) {\it vs.}\ Analysis RMSE as recorded by Weatherbench 2 was \qty{1.699}{\kelvin}. The equivalent for IFS ENS (1st member) {\it vs.}\ Analysis was \qty{2.554}{\kelvin}. The discrepancy between Dawn and Baskerville at this point was \qty{0.0937}{\kelvin}.
+To take an explicit example, after 27 roll-out steps (162 hours) IFS ENS (mean) \textit{vs.}\ Analysis RMSE as recorded by Weatherbench 2 was \qty{1.699}{\kelvin}. The equivalent for IFS ENS (1st member) \textit{vs.}\ Analysis was \qty{2.554}{\kelvin}. The discrepancy between Dawn and Baskerville at this point was \qty{0.0937}{\kelvin}.
 
 For these results we took the Weatherbench 2 data at the same resolution ($1440 \times 721$) as used for our results. However the times don't align: our data is for January 2023 whereas the Weatherbench 2 data is for 2022. These results are therefore not directly comparable, but we believe them to be broadly representative.
 
@@ -367,7 +367,7 @@ We proceeded to run fine-tuning on both Dawn and Baskerville using 34 time-steps
 
 On Dawn and Baskerville, we ran multi-GPU fine-tuning with unsharded FSDP (equivalent to using DDP) using one node (one and four GPUs total), two nodes (two and eight GPUs total) and four nodes (four GPUs total). We did this using the PyTorch FSDP class and setting the FSDP sharding strategy to \texttt{NO\_SHARD}.
 
-For these runs, we used a batch size of one ({\it i.e.,} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
+For these runs, we used a batch size of one (\textit{i.e.,} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
 
 Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab:fine-tune-bask}. Comparison of these two tables shows that Dawn is consistently running around 3 times more slowly than Baskerville.
 
@@ -417,9 +417,9 @@ As an aside, comparing the results for ``Wall-clock time per iteration'', we not
 
 We collected metrics for the training runs using two nodes with four GPUs on each.
 
-In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville ({\it i.e.,} 61 GiB per GPU).
+In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville (\textit{i.e.,} 61 GiB per GPU).
 
-In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} ({\it i.e.,} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
+In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} (\textit{i.e.,} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
 
 \subsubsection{Energy usage comparison}
 \label{section:energy-comparison}
@@ -662,7 +662,7 @@ For \bfhalf\ matrix operations we see almost identical results between Dawn and 
 
 Given these results it is perhaps most surprising that we see identical cumulative errors for \bfhalf\ across the two GPUs. It could be that Dawn and Baskerville use different algorithms for \fphalf\ and \fpsingle, but identical or very similar algorithms for \bfhalf.
 
-To investigate further we ran the same calculations, but this time multiplying and adding a {\it different\/} pair of matrices at each step. Our results are shown in Figure \ref{fig:error-comparison-dev-mad-fuzz-1024x1024}.
+To investigate further we ran the same calculations, but this time multiplying and adding a \textit{different\/} pair of matrices at each step. Our results are shown in Figure \ref{fig:error-comparison-dev-mad-fuzz-1024x1024}.
 
 While the \fpsingle\ and \bfhalf\ results remain similar, the \fphalf\ results show a different behaviour. The errors are still erratic but now the discrepancy between the two systems appears to be masked by the randomness. Moreover, the overall pattern is that the results align most closely with the results from Dawn in the previous run.
 
