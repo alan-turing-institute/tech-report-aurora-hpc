@@ -14,11 +14,12 @@
 \end{abstract}
 
 \newpage
+{\setlength{\parskip}{0pt}
 \setcounter{tocdepth}{2}
 %% EDITOR: Changed baselinestretch
 % {
 %\renewcommand{\baselinestretch}{0.75}\normalsize
-\tableofcontents
+\tableofcontents}
 %}
 \newpage
 
@@ -367,7 +368,7 @@ We proceeded to run fine-tuning on both Dawn and Baskerville using 34 time-steps
 
 On Dawn and Baskerville, we ran multi-GPU fine-tuning with unsharded FSDP (equivalent to using DDP) using one node (one and four GPUs total), two nodes (two and eight GPUs total) and four nodes (four GPUs total). We did this using the PyTorch FSDP class and setting the FSDP sharding strategy to \texttt{NO\_SHARD}.
 
-For these runs, we used a batch size of one (\textit{i.e.,} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
+For these runs, we used a batch size of one (\ie\ one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
 
 Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab:fine-tune-bask}. Comparison of these two tables shows that Dawn is consistently running around 3 times more slowly than Baskerville.
 
@@ -417,9 +418,9 @@ As an aside, comparing the results for ``Wall-clock time per iteration'', we not
 
 We collected metrics for the training runs using two nodes with four GPUs on each.
 
-In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville (\textit{i.e.,} 61 GiB per GPU).
+In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville (\ie\ 61 GiB per GPU).
 
-In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} (\textit{i.e.,} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
+In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} (\ie\ 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
 
 \subsubsection{Energy usage comparison}
 \label{section:energy-comparison}
@@ -1013,7 +1014,7 @@ the output when running in Flat mode, as can be seen in Table
     \label{tab:flatresultsfirst}
 \end{table}
 
-These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\textit{e.g.,} tensors being used uninitialised) rather than differences at the level of basic maths operations.
+These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\eg, tensors being used uninitialised) rather than differences at the level of basic maths operations.
 
 \subsection{Comparison with Aurora}
 \label{section:calccomparisonaurora}
