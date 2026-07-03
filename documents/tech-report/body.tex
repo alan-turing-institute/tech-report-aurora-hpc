@@ -306,7 +306,7 @@ On Dawn, running inference using \textit{flat} device hierarchy gave an average 
 
 For comparison, running the same inference steps on Baskerville gave an average step time of 6.09 seconds. The total time for all 28 steps was 180.54 seconds. The total run time, including data and model loading, was 255.48 seconds. Given the small variation between runs, these results are broadly in line with those from Dawn, suggesting similar overall performance. Table \ref{tab:inference} summarises these results.
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 1
     \centering
  %   \hbadness=99999
     \begin{tabular}{@{}llrrrr@{}}
@@ -372,15 +372,15 @@ For these runs, we used a batch size of one (\ie\ one aurora \texttt{Batch}), th
 
 Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab:fine-tune-bask}. Comparison of these two tables shows that Dawn is consistently running around 3 times more slowly than Baskerville.
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 2
     \centering
     \begin{tabular}{@{}rrrrr@{}}
       \toprule
       Nodes
       & GPUs
-      & \shortstack[r]{Compute time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Wall-clock time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Total\\ run time ${}/\unit{\second}$} \\ \midrule
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
         1 & 1 & 18.13& 18.13& 636.14\\
         1 & 4 & 17.76& 4.44& 212.96\\
         2 & 4 & 19.40& 4.85& 198.54\\
@@ -391,15 +391,15 @@ Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab
     \label{tab:fine-tune-Dawn}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 3
     \centering
-    \begin{tabular}{@{}llrrr@{}}
+    \begin{tabular}{@{}rrrrr@{}}
       \toprule
       Nodes
       & GPUs
-      & \shortstack[r]{Compute time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Wall-clock time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Total\\ run time ${}/\unit{\second}$} \\ \midrule
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
         1 & 1 & 5.88& 5.88& 250.55\\
         1 & 4 & 6.83& 1.71& 120.34\\
         2 & 4 & 6.33& 1.58& 116.46\\
@@ -433,10 +433,10 @@ In terms of GPU energy usage, the lowest-energy configuration is one node with o
 
 For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (\qty{84.55}{\watt}) and four nodes with four GPUs total on Dawn (\qty{287.52}{\watt}), while the highest values occur at one node with one GPU total on both systems (\qty{209.15}{\watt} on Baskerville; \qty{386.30}{\watt} on Dawn).
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 4
     \centering
     \hbadness=99999
-    \begin{tabular}{@{}llrr@{}}
+    \begin{tabular}{@{}rrrr@{}}
       \toprule
       Nodes
       & GPUs
@@ -452,9 +452,9 @@ For average power draw per GPU, the lowest values are at two nodes with eight GP
     \label{tab:energy-bask}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 5
     \centering
- \begin{tabular}{@{}llrrr@{}}
+ \begin{tabular}{@{}rrrrr@{}}
       \toprule
       Nodes
       & GPUs
@@ -501,16 +501,16 @@ Results are shown in Table \ref{tab:flat-vs-composite-Dawn}. Note these are not 
 
 It is also worth noting that running on the 80 GiB A100 nodes on Baskerville, models of size $(20, 20, 20)$ or larger triggered out-of-memory errors. These models are technically smaller than the standard Aurora model but not directly comparable given the different structure resulting from changes to other parameters. The 128 GiB of memory available on the Intel GPUs in \textit{composite} mode allowed larger model sizes to be supported without sharding.
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 6
     \centering
-    \begin{tabular}{@{}lllrrr@{}}
+    \begin{tabular}{@{}rrlrrr@{}}
       \toprule
       GPUs
       & Devices
       & Hierarchy
-      & \shortstack[r]{Compute time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Wall-clock time\\ per iteration ${}/\unit{\second}$}
-      & \shortstack[r]{Total\\ run time ${}/\unit{\second}$} \\ \midrule
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
           1  & 1&\textit{flat}& 6.86& 6.86& 257.43\\
   1& 2& \textit{flat}& 7.84& 3.92&176.54\\
           4& 4&\textit{flat}& 8.13& 2.03& 122.72\\
