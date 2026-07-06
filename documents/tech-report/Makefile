@@ -1,4 +1,4 @@
-tech-report-aurora-dawn.pdf: main.tex body.tex styles.tex bibliography.bib
+tech-report-aurora-dawn.pdf: main.tex body.tex bibliography.bib
 	latexmk -xelatex main.tex ; \
 	cp main.pdf tech-report-aurora-dawn.pdf
 
