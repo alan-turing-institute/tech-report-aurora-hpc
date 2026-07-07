@@ -11,12 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Compile LaTeX documents
-        uses: xu-cheng/texlive-action@v2
+        uses: xu-cheng/texlive-action@v3
         with:
+          os: debian
           scheme: full
           run: |
+            apt-get install -y fonts-cmu
             pushd documents/tech-report
             make
             popd
