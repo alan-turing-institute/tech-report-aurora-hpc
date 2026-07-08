@@ -1,11 +1,11 @@
-\begin{titlepage}
-\includepdf{diagrams/tech-report-title-page}
-\end{titlepage}
-
-\title{Porting Aurora to Intel Accelerated Hardware, an Experimental and Experiential Comparison}
-
-\author{Iain Stenson, Rosie Wood, David Llewellyn-Jones, Tomas Lazauskas}
-
+% -*- TeX-engine: luatex; fill-column: 101; eval: (auto-fill-mode -1); eval: (visual-fill-column-mode 1); eval: (visual-line-mode 1); eval: (adaptive-wrap-prefix-mode 1) -*-
+%% EDITOR: Cover sheet created separately
+% \begin{titlepage}
+% \includepdf{diagrams/tech-report-title-page}
+% \end{titlepage}
+% \title{Porting Aurora to Intel Accelerated Hardware, an Experimental and Experiential Comparison}
+% \author{Iain Stenson, Rosie Wood, David Llewellyn-Jones, Tomas Lazauskas}
+\setcounter{page}{3}
 \begin{abstract}
     Dawn is an AI-optimised High Performance Computing system funded under the AI Research Resource programme in the UK. Unlike other similar systems it uses Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs, which are incompatible with the \textit{de facto} standard NVIDIA CUDA and AMD ROCm accelerator frameworks.
 
@@ -15,18 +15,20 @@
 \end{abstract}
 
 \newpage
+{\setlength{\parskip}{0pt}
 \setcounter{tocdepth}{2}
-{
-\renewcommand{\baselinestretch}{0.75}\normalsize
-\tableofcontents
-}
+%% EDITOR: Changed baselinestretch
+% {
+%\renewcommand{\baselinestretch}{0.75}\normalsize
+\tableofcontents}
+%}
 \newpage
 
 \section{Introduction}
 
 Dawn is one of two AI-optimised HPCs funded by the UK government as part of the AI Research Resource (AIRR) programme \cite{applencourt1014dawn,mcintosh2024isambard}. Hosted at the University of Cambridge, Dawn differs from most UK HPCs in that it uses Intel GPUs as opposed to NVIDIA GPUs. Dawn was first made available for pioneer (early access) projects in April 2024 with full access to the broader community starting in April 2025.
 
-While several Turing projects had the benefit of trialling the service during the early access period, the new architecture means it's nevertheless a relatively unknown quantity for researchers both inside and outside the Turing.
+While several Turing projects had the benefit of trialling the service during the early access period, the new architecture means it is nevertheless a relatively unknown quantity for researchers both inside and outside the Turing.
 
 AI workloads are typically highly parallelisable and therefore able to make effective use of GPU compute to accelerate both training and inference. Both within the High Performance Computing space and in other areas NVIDIA enjoys relative market dominance. This has led to a scarcity of the most powerful GPUs from NVIDIA, particular due to increases in AI-driven workloads \cite{yoffie2024nvidia}.
 
@@ -36,11 +38,11 @@ Given this context and the fact that Dawn eschews NVIDIA in favour of Intel GPUs
 
 This work therefore explores the ease of porting code originally developed for NVIDIA hardware onto the Intel hardware on Dawn. We use the Microsoft Aurora weather model \cite{bodnar_foundation_2025} as a test case, investigate the ease of running Aurora on Dawn, and benchmark inference and training speeds against NVIDIA A100 GPUs on Baskerville HPC.
 
-Our results show near-consistent inference outputs between the two HPCs: performing a seven day (28 time-step) roll-out yielded similar but not identical results on Dawn and Baskerville, with the two-meter temperature RMSE between the two reaching 0.09 K. Average inference times were also comparable at around 6.2 seconds per time-step for Dawn and 6.1 seconds per time-step on Baskerville. However, training speeds were consistently around 3 times slower on Dawn versus Baskerville. We attribute this to the need to use a \textit{composite} device hierarchy when running Aurora on Dawn, in which both GPU tiles are treated as one single device and which is needed to access the full 128 GiB of GPU memory. Running a smaller version of the Aurora model using the \textit{flat} device hierarchy gave us training speeds more in line with those seen for Baskerville using the same model configuration.
+Our results show near-consistent inference outputs between the two HPCs: performing a seven day (28 time-step) roll-out yielded similar but not identical results on Dawn and Baskerville, with the two-metre temperature RMSE between the two reaching \qty{0.09}{\kelvin}. Average inference times were also comparable at around 6.2 seconds per time-step for Dawn and 6.1 seconds per time-step on Baskerville. However, training speeds were consistently around 3 times slower on Dawn versus Baskerville. We attribute this to the need to use a \textit{composite} device hierarchy when running Aurora on Dawn, in which both GPU tiles are treated as one single device and which is needed to access the full 128 GiB of GPU memory. Running a smaller version of the Aurora model using the \textit{flat} device hierarchy gave us training speeds more in line with those seen for Baskerville using the same model configuration.
 
-As noted the results obtained were similar but not identical. We therefore also explored the extent to which the two systems differ in their outputs. Although the differences are real, the RMSE for 27 rollout steps amounted to 0.0937 K.  For a sense of scale, we can look at numbers provided by Weatherbench 2 \cite{rasp2024weatherbench2benchmarkgeneration} on the performance of IFS ENS (Integrated Forecasting System Ensemble), a numerical weather prediction system operated by the European Centre for Medium-Range Weather Forecasts (ECMWF) \textit{vs.} their analysis (a best-guess of the Earth system state, which are also used as the forecast's initial conditions).
+As noted the results obtained were similar but not identical. We therefore also explored the extent to which the two systems differ in their outputs. Although the differences are real, the RMSE for 27 rollout steps amounted to 0.0937 K.  For a sense of scale, we can look at numbers provided by Weatherbench 2 \cite{rasp2024weatherbench2benchmarkgeneration} on the performance of IFS ENS (Integrated Forecasting System Ensemble), a numerical weather prediction system operated by the European Centre for Medium-Range Weather Forecasts (ECMWF) \textit{vs.}\ their analysis (a best-guess of the Earth system state, which are also used as the forecast's initial conditions).
 
-Our difference of 0.0937 K is relatively small next to the error of the mean of the IFS ENS, which is reported by Weatherbench 2 to be 1.699 K. We explored the discrepancies in more detail by considering errors introduced when performing more basic operations of matrix multiplication and addition. We found that discrepancies were introduced through the use of \fphalf\ and \fpdouble\ calculations, whereas \bfhalf\ calculations yielded identical results on both systems.
+Our difference of \qty{0.0937}{\kelvin} is relatively small next to the error of the mean of the IFS ENS, which is reported by Weatherbench 2 to be \qty{1.699}{\kelvin}. We explored the discrepancies in more detail by considering errors introduced when performing more basic operations of matrix multiplication and addition. We found that discrepancies were introduced through the use of \fphalf\ and \fpdouble\ calculations, whereas \bfhalf\ calculations yielded identical results on both systems.
 
 \section{Aims}
 
@@ -59,12 +61,13 @@ Each section is prefaced with a brief list summarising our conclusions from the 
 
 \begin{enumerate}
     \item Dawn uses Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs; Baskerville uses NVIDIA A100 GPUs.
-    \item Performing inference roll-out for 7 days (28 time-steps) showed similar but not identical results between Dawn and Baskerville, with the two-meter temperature RMSE between the two reaching 0.09 K.
+    \item Performing inference roll-out for 7 days (28 time-steps) showed similar but not identical results between Dawn and Baskerville, with the two-meter temperature RMSE between the two reaching \qty{0.09}{\kelvin}.
     \item Baskerville gave consistent results but additional configuration was required to avoid small variations between runs on Dawn.
     \item For inference, average step time was 6.2 seconds and 6.7 seconds on Dawn, using \textit{flat} and \textit{composite} hierarchies, respectively, compared to 6.1 seconds on Baskerville.
     \item Using multi-node and multi-GPU training, Dawn consistently ran approximately three times slower than Baskerville.
     \item Slower Dawn performance can be partially attributed to the need to use \textit{composite} device hierarchy on Dawn with a two times performance hit. Model sharding would likely be one approach to mitigating this.
-    \item The CPU to GPU/XPU bandwidth on Dawn is consistently higher than on Baskerville by a factor of up to 4.4 times.
+    \item The CPU to GPU/XPU bandwidth on Dawn is consistently higher
+      than on Baskerville by a factor of up to~4.4.
     \item Filesystem performance depends on caching, with Baskerville having faster un-cached reads and Dawn having faster cached reads.
     \item Measuring floating point matrix operation errors showed better accuracy using \fpsingle\ on Baskerville, better accuracy using \fphalf\ on Dawn and identical results across the two systems for \bfhalf.
     \item We experienced some reliability issues due to data centre upgrades with Dawn.
@@ -87,14 +90,14 @@ The main outcomes of this section will be to show the following:
 
 Dawn hardware is detailed on the \href{https://docs.hpc.cam.ac.uk/hpc/user-guide/pvc.html#hardware_}{Cambridge CSD3 pages}.
 
-Briefly, there are 256 nodes, each with four Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs. Each GPU consists of two tiles (a.k.a. {\it stacks}) that can be treated as two independent devices with 64 GiB RAM or as one device with 128 GiB RAM.
+Briefly, there are 256 nodes, each with four Intel\textsuperscript{\tiny\textregistered} Data Center GPU Max 1550 GPUs. Each GPU consists of two tiles (a.k.a.\ \textit{stacks}) that can be treated as two independent devices with 64 GiB RAM or as one device with 128 GiB RAM.
 
 Each node has 2 $\times$ Intel\textsuperscript{\tiny\textregistered} Xeon\textsuperscript{\tiny\textregistered} Platinum 8468 CPUs, giving a total of 96 cores.
 
 \subsubsection{Dawn device hierarchy}
 \label{section:devicehierarchy}
 
-The Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs used by Dawn are based on the Ponte Vecchio architecture. These differ from the NVIDIA A100 GPUs in Baskerville in that each GPU is comprised of two compute units, referred to as {\it tiles} or {\it stacks} (to avoid confusion with terminology used elsewhere, we refer to them here as {\it stacks}).
+The Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs used by Dawn are based on the Ponte Vecchio architecture. These differ from the NVIDIA A100 GPUs in Baskerville in that each GPU is composed of two compute units, referred to as \textit{tiles} or \textit{stacks} (to avoid confusion with terminology used elsewhere, we refer to them here as \textit{stacks}).
 
 Each stack is made up of eight TSMC N5 compute tiles and four Intel 7 memory tiles on an Intel 7 Foveros base die. Connected to each die are four HBM2E memory tiles and a TSMC N7 SerDes connectivity tile, connected using dense embedded interconnect bridges (EMIB). A further EMIB joins the two stacks together \cite{ponteveccio_2022}. See Figure \ref{fig:ponteveccio-stacks} for a high-level illustration of the arrangement.
 
@@ -104,13 +107,13 @@ Each stack is made up of eight TSMC N5 compute tiles and four Intel 7 memory til
 \caption{\label{fig:ponteveccio-stacks}Illustrative diagram showing the internal components of the Ponte Vecchio GPU architecture \cite{ponteveccio_2022}.}
 \end{figure}
 
-Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs can be used in two modes, called {\it hierarchies}. In the {\it flat\/} hierarchy, each {\it stack} is exposed as a separate GPU and addressable as if it were a different piece of hardware. In this mode there appear to be eight addressable GPUs on the node (2 {\it stacks} $\times$ 4 GPU cards). In the {\it composite} hierarchy, both {\it stacks} are treated as one root device composed of multiple sub-devices. Implicit scaling then means that the two stacks appear as a single GPU.
+Intel\textsuperscript{\tiny\textregistered} Data Center Max 1550 GPUs can be used in two modes, called \textit{hierarchies}. In the \textit{flat\/} hierarchy, each stack is exposed as a separate GPU and addressable as if it were a different piece of hardware. In this mode there appear to be eight addressable GPUs on the node (2 stacks $\times$ 4 GPU cards). In the \textit{composite} hierarchy, both stacks are treated as one root device composed of multiple sub-devices. Implicit scaling then means that the two stacks appear as a single GPU.
 
-For our purposes the crucial difference between the two is that in {\it flat} mode we see two devices, each with 64 GiB of addressable High Bandwidth Memory, whereas in {\it composite\/} mode we see a single device with 128 GiB of addressable High Bandwidth Memory. The standard Aurora model requires approximately 80 GiB for training and hence its use is restricted to {\it composite} mode. We consider the performance impact of this restriction in Section \ref{section:modelsize}.
+For our purposes the crucial difference between the two is that in \textit{flat} mode we see two devices, each with 64 GiB of addressable High Bandwidth Memory, whereas in \textit{composite\/} mode we see a single device with 128 GiB of addressable High Bandwidth Memory. The standard Aurora model requires approximately 80 GiB for training and hence its use is restricted to \textit{composite} mode. We consider the performance impact of this restriction in Section \ref{section:modelsize}.
 
 \subsubsection{Python environment}
 
-On Dawn, we installed Aurora using a virtual environment with Python 3.11.9, microsoft-aurora v1.5.1, PyTorch 2.7.0 and \href{https://pytorch-extension.intel.com/installation?platform=gpu&version=v2.7.10%2Bxpu&os=linux%2Fwsl2&package=pip}{Intel Extension for PyTorch} v2.7.10+xpu (a.k.a. ``ipex'').
+On Dawn, we installed Aurora using a virtual environment with Python~3.11.9, microsoft-aurora v1.5.1, PyTorch 2.7.0 and \href{https://pytorch-extension.intel.com/installation?platform=gpu&version=v2.7.10%2Bxpu&os=linux%2Fwsl2&package=pip}{Intel Extension for PyTorch} v2.7.10+xpu (a.k.a. ``ipex'').
 The ipex library is necessary because, until recently, PyTorch did not support Intel GPUs out of the box.
 For single-GPU usage, only ipex is necessary. For multi-GPU work, the oneCCL Bindings for PyTorch library is also needed for collective communications. This is Intel's equivalent of \href{https://developer.nvidia.com/nccl}{NVIDIA's NCCL}.
 
@@ -143,7 +146,7 @@ Since one of the aims of this work is to compare the deployment of Aurora on Daw
 
 Baskerville hardware is detailed in the \href{https://docs.baskerville.ac.uk/system/}{Baskerville documentation}.
 
-Baskerville offers NVIDIA A100 GPUs; we used the 80 GiB variants of these to ensure we had enough memory to perform fine-tuning of Aurora. Each node has four such GPUs and 2 $\times$ Intel\textsuperscript{\tiny\textregistered} Xeon\textsuperscript{\tiny\textregistered} Platinum 8360Y CPUs, giving a total of 72 cores at 2.4 GHz (with boost to 3.5 GHz) and 512 GiB RAM (16 $\times$ 32 GiB DDR4).
+Baskerville offers NVIDIA A100 GPUs; we used the 80 GiB variants of these to ensure we had enough memory to perform fine-tuning of Aurora. Each node has four such GPUs and 2 $\times$ Intel\textsuperscript{\tiny\textregistered} Xeon\textsuperscript{\tiny\textregistered} Platinum 8360Y CPUs, giving a total of 72 cores at \qty{2.4}{\giga\hertz} (with boost to \qty{3.5}{\giga\hertz}) and 512 GiB RAM (16 $\times$ 32 GiB DDR4).
 
 Baskerville GPUs offer a typical arrangement for running AI workflows, similar to the \href{https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series}{NC\_A100\_v4 series} of virtual machines available on Azure.
 
@@ -188,7 +191,7 @@ In this section we detail how we performed experiments to test inference and, in
 In this section we will establish the following:
 
 \begin{enumerate}
-    \item Performing inference roll-out for 7 days (28 time-steps) showed similar but not identical results between Dawn and Baskerville, with RMSE between the two reaching 0.09 K.
+    \item Performing inference roll-out for 7 days (28 time-steps) showed similar but not identical results between Dawn and Baskerville, with RMSE between the two reaching \qty{0.09}{\kelvin}.
     \item Baskerville gave consistent results but additional configuration was required to avoid small variations between runs on Dawn.
     \item Inference timings were roughly comparable for Dawn and Baskerville with an average step time of 6.2 and 6.7 seconds on Dawn, using \textit{flat} versus \textit{composite} hierarchies, respectively, compared to 6.1 seconds on Baskerville.
 \end{enumerate}
@@ -209,23 +212,23 @@ We compared our Dawn inference results with Baskerville and plotted the results.
 The left-hand plots of figures \ref{fig:pvg-Dawn} and \ref{fig:pvg-bask} show the predicted two-meter temperature after a 7 day rollout on Dawn and Baskerville, respectively. The right-hand sides of these figures show the ground truth values, taken from the ERA5 dataset.
 From these, we can see both sets of predicted values look very similar, suggesting that both Dawn and Baskerville have generated very similar results.
 
-We can quantify these results more accurately by calculating the Root Mean Square Error (RMSE) across the two systems and between the two systems. In Figure \ref{fig:errors} we perform a four-way comparison. The top row shows the error between the predicted values and ground truth for two-meter surface temperature after a 7 day rollout on Dawn (left) and Baskerville (right). The colour scale is between 0 and 5 degrees Kelvin. The bottom row shows the RMSE between the two sets of predicted values (Dawn and Baskerville) and the two sets of ground truth values.
+We can quantify these results more accurately by calculating the Root Mean Square Error (RMSE) across the two systems and between the two systems. In Figure \ref{fig:errors} we perform a four-way comparison. The top row shows the error between the predicted values and ground truth for two-meter surface temperature after a 7 day rollout on Dawn (left) and Baskerville (right). The colour scale is between \qty{0}{\kelvin} and \qty{5}{\kelvin}. The bottom row shows the RMSE between the two sets of predicted values (Dawn and Baskerville) and the two sets of ground truth values.
 
-We can see from the top row of Figure \ref{fig:errors} that both Dawn and Baskerville diverge from the ground truth values, and do so in similar global regions. The RMSE between predicted and ground truth results on Dawn is 3.202056 K. We'd hope to therefore see a very similar error on Baskerville and, in fact, the RMSE there is 3.203108 K.
+We can see from the top row of Figure \ref{fig:errors} that both Dawn and Baskerville diverge from the ground truth values, and do so in similar global regions. The RMSE between predicted and ground truth results on Dawn is \qty{3.202056}{\kelvin}. We'd hope to therefore see a very similar error on Baskerville and, in fact, the RMSE there is \qty{3.203108}{\kelvin}.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-Dawn.pdf}
-\caption{\label{fig:pvg-Dawn}Comparison of prediction {\it vs.} ground truth after 7 day rollout for the two-meter temperature in K ranged (223.15, 323.15), generated on Dawn.}
+\caption{\label{fig:pvg-Dawn}Comparison of prediction \textit{vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Dawn.}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=1.0\linewidth]{plot-pvg-bask.pdf}
-\caption{\label{fig:pvg-bask}Comparison of prediction {\it vs.} ground truth after 7 day rollout for the two-meter temperature in K ranged (223.15, 323.15), generated on Baskerville.}
+\caption{\label{fig:pvg-bask}Comparison of prediction \textit{vs.}\ ground truth after 7 day rollout for the two-meter temperature in the range (\qty{223.15}{\kelvin}, \qty{323.15}{\kelvin}), generated on Baskerville.}
 \end{figure}
 
-For this work the key comparison isn't between the predicted values and ground truth but rather between the two systems. From the bottom left plot, we see the RMSE between Dawn and Baskerville predictions is 0.0936902 K, which gives an overall quantification of the impact that running on different systems and different configurations can have. Finally the RMSE between the ground truth results on Dawn and Baskerville is zero, which is to be expected since this is a subtraction between values loaded from the ERA5 data.
+For this work the key comparison isn't between the predicted values and ground truth but rather between the two systems. From the bottom left plot, we see the RMSE between Dawn and Baskerville predictions is \qty{0.0936902}{\kelvin}, which gives an overall quantification of the impact that running on different systems and different configurations can have. Finally the RMSE between the ground truth results on Dawn and Baskerville is zero, which is to be expected since this is a subtraction between values loaded from the ERA5 data.
 
 \begin{figure}[t]
 \centering
@@ -241,11 +244,11 @@ Figure \ref{fig:losses} compares the loss values from rollout across the two sys
 \caption{\label{fig:losses}Losses calculated using the Mean Average Error loss function (see Section \ref{section:loss}) for each rollout step comparing Dawn and Baskerville.}
 \end{figure}
 
-Figure \ref{fig:error-comparison} shows the RMSE and difference between Dawn and Baskerville predictions for two-meter temperature across the rollout. From the RMSE (left), we see a steady climb to 0.09 K as the rollout progresses. From the difference (right), we see that, after a 7 day rollout, the predictions are distributed around 0, suggesting that there is no temperature bias between the Dawn and Baskerville results.
+Figure \ref{fig:error-comparison} shows the RMSE and difference between Dawn and Baskerville predictions for two-meter temperature across the rollout. From the RMSE (left), we see a steady climb to \qty{0.09}{\kelvin} as the rollout progresses. From the difference (right), we see that, after a 7 day rollout, the predictions are distributed around 0, suggesting that there is no temperature bias between the Dawn and Baskerville results.
 
 To try to understand the scale of discrepancy between the two systems, we compared the errors with the RMSE for the two-meter temperature values of the IFS ENS forecasts, as provided by Weatherbench 2. In Figure \ref{fig:error-weatherbench} we draw RMSE values for two example forecasts, plotting error bars to indicate the variability reflected by the errors we measured between the Dawn and Baskerville systems. We also draw the line for the Dawn and Baskerville RMSE values for comparison.
 
-To take an explicit example, after 27 roll-out steps (162 hours) IFS ENS (mean) {\it vs.} Analysis RMSE as recorded by Weatherbench 2 was 1.699 K. The equivalent for IFS ENS (1st member) {\it vs.} Analysis was 2.554 K. The discrepancy between Dawn and Baskerville at this point was 0.0937 K.
+To take an explicit example, after 27 roll-out steps (162 hours) IFS ENS (mean) \textit{vs.}\ Analysis RMSE as recorded by Weatherbench 2 was \qty{1.699}{\kelvin}. The equivalent for IFS ENS (1st member) \textit{vs.}\ Analysis was \qty{2.554}{\kelvin}. The discrepancy between Dawn and Baskerville at this point was \qty{0.0937}{\kelvin}.
 
 For these results we took the Weatherbench 2 data at the same resolution ($1440 \times 721$) as used for our results. However the times don't align: our data is for January 2023 whereas the Weatherbench 2 data is for 2022. These results are therefore not directly comparable, but we believe them to be broadly representative.
 
@@ -290,11 +293,11 @@ torch.xpu.random.manual_seed_all(42)
 
 The first line enforces \textit{``algorithms which, given the same input, and when run on the same software and hardware, always produce the same output''}. When enabled, a {\tt RuntimeError} will be thrown if a required deterministic algorithm isn't available; however this didn't happen for our code.
 
-Use of uninitialised memory can also cause nondeterministic behaviour in some cases. One solution for avoiding this is to fill all uninitialised memory before use, which can be configured by setting {\tt fill\_uninitialized\_memory} to {\tt True}. Since this impacts performance it's better to avoid this if it's not needed.
+Use of uninitialised memory can also cause nondeterministic behaviour in some cases. One solution for avoiding this is to fill all uninitialised memory before use, which can be configured by setting {\tt fill\_uninitialized\_memory} to {\tt True}. Since this impacts performance it is better to avoid this if it is not needed.
 
 We tested with this option both set to {\tt True} and {\tt False} and established that this did not affect the results. We therefore disabled it for our runs to avoid the performance penalty.
 
-Setting the random seed also required additional intervention. Typically we could call something like {\tt torch.manual\_seed(42)}, which is intended to set the seed across all devices. However we found it necessary to call the XPU-specific {\tt torch.xpu.random.manual\_seed\_all(42)} to ensure deterministic behaviour. This is important to be aware of, given it's an XPU-specific requirement.
+Setting the random seed also required additional intervention. Typically we could call something like {\tt torch.manual\_seed(42)}, which is intended to set the seed across all devices. However we found it necessary to call the XPU-specific {\tt torch.xpu.random.manual\_seed\_all(42)} to ensure deterministic behaviour. This is important to be aware of, given it is an XPU-specific requirement.
 
 \subsubsection{Time comparison}
 
@@ -302,18 +305,22 @@ For all inference timings, we exclude the time for the first time-step due to se
 
 On Dawn, running inference using \textit{flat} device hierarchy gave an average time-step of 6.21 seconds. The total time for doing a rollout of 28 steps was 185.29 seconds and the total time for running the inference code, including loading data and the Aurora model, was 248.45 seconds. Running inference using \textit{composite} device hierarchy gave an average step time of 6.72 seconds. The total time for doing a rollout of 28 steps was 199.70 seconds and the total time for running the inference code was 262.76 seconds.
 
-For comparison, running the same inference steps on Baskerville gave an average step time of 6.09 seconds. The total time for all 28 steps was 180.54 seconds. The total run time, including data and model loading, was 255.48 seconds. Given the small variation between runs, these results are broadly in line with those from Dawn, suggesting similar overall performance.
+For comparison, running the same inference steps on Baskerville gave an average step time of 6.09 seconds. The total time for all 28 steps was 180.54 seconds. The total run time, including data and model loading, was 255.48 seconds. Given the small variation between runs, these results are broadly in line with those from Dawn, suggesting similar overall performance. Table \ref{tab:inference} summarises these results.
 
-Table \ref{tab:inference} summarises these results.
-
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 1
     \centering
-    \hbadness=99999
-    \begin{tabular}{ll|rrrr}
-        \parbox{1cm}{System \\} & \parbox{1cm}{Mode \\} & \parbox{2.3cm}{\raggedleft Mean time-step /s} &  \parbox{2.2 cm}{\raggedleft Time for first step /s} & \parbox{2.2cm}{\raggedleft Time for 28 steps /s} & \parbox{2.1cm}{\raggedleft Total run \\ time /s} \\ \hline
+ %   \hbadness=99999
+    \begin{tabular}{@{}llrrrr@{}}
+      \toprule
+      System
+      & Mode
+      & \shortstack[r]{Mean\\ time-step ${}/\unit{\second}$}
+      & \shortstack[r]{Time for\\ first step ${}/\unit{\second}$}
+      & \shortstack[r]{Time for\\ 28 steps ${}/\unit{\second}$}
+      & \shortstack[r]{Total\\ run time ${}/\unit{\second}$} \\ \midrule
         Dawn & \textit{flat} & 6.21&  17.56&185.29& 248.45\\
         Dawn & \textit{composite} & 6.72&  18.37&199.70& 262.76\\
-        Baskerville & N/A& 6.09&  15.86&180.54& 255.48\\
+        Baskerville & N/A& 6.09&  15.86&180.54& 255.48\\ \bottomrule
     \end{tabular}
     \caption{Inference timings.}
     \label{tab:inference}
@@ -362,42 +369,49 @@ We proceeded to run fine-tuning on both Dawn and Baskerville using 34 time-steps
 
 On Dawn and Baskerville, we ran multi-GPU fine-tuning with unsharded FSDP (equivalent to using DDP) using one node (one and four GPUs total), two nodes (two and eight GPUs total) and four nodes (four GPUs total). We did this using the PyTorch FSDP class and setting the FSDP sharding strategy to \texttt{NO\_SHARD}.
 
-For these runs, we used a batch size of one ({\it i.e.} one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
+For these runs, we used a batch size of one (\ie\ one aurora \texttt{Batch}), the PyTorch {\tt DistributedSampler}, AdamW optimizer and our Aurora loss function for fine-tuning. To compare our different runs, we updated our model gradients only once per eight batches of data. This was to allow for the fact that when training with DDP and eight GPUs, eight batches of data would pass through our model (in eight parallel threads) before our model gradients would be updated. Thus, when running with one GPU, our model gradients should also only be updated after every eight batches of data. An iteration is therefore one forward pass (using an Aurora \texttt{Batch} with two time points to predict one future time point) and one backwards pass and, every eight iterations, we then do one optimiser step.
 
 Timings for these runs are shown in tables \ref{tab:fine-tune-Dawn} and \ref{tab:fine-tune-bask}. Comparison of these two tables shows that Dawn is consistently running around 3 times more slowly than Baskerville.
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 2
     \centering
-    \hbadness=99999
-    \begin{tabular}{rr|rrr}
-        \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{3.3cm}{\raggedleft Compute time per iteration /s} & \parbox{3.3cm}{\raggedleft Wall-clock time per iteration /s} & \parbox{2.0cm}{\raggedleft Total run time /s} \\ \hline
+    \begin{tabular}{@{}rrrrr@{}}
+      \toprule
+      Nodes
+      & GPUs
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
         1 & 1 & 18.13& 18.13& 636.14\\
         1 & 4 & 17.76& 4.44& 212.96\\
         2 & 4 & 19.40& 4.85& 198.54\\
         4 & 4 & 19.60& 4.90& 201.28\\
-        2 & 8 & 19.18& 2.43& 122.76\\
+        2 & 8 & 19.18& 2.43& 122.76\\ \bottomrule
     \end{tabular}
     \caption{Fine-tuning timings on Dawn.}
     \label{tab:fine-tune-Dawn}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 3
     \centering
-    \hbadness=99999
-    \begin{tabular}{r r | r r r }
-        \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{3.3cm}{\raggedleft Compute time per iteration /s} & \parbox{3.3cm}{\raggedleft Wall-clock time per iteration /s} & \parbox{2.0cm}{\raggedleft Total run time /s} \\ \hline
-
+    \begin{tabular}{@{}rrrrr@{}}
+      \toprule
+      Nodes
+      & GPUs
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
         1 & 1 & 5.88& 5.88& 250.55\\
         1 & 4 & 6.83& 1.71& 120.34\\
         2 & 4 & 6.33& 1.58& 116.46\\
         4 & 4 & 6.22& 1.56& 117.84\\
-        2 & 8 & 6.92& 0.87& 94.4\\
+        2 & 8 & 6.92& 0.87& 94.4\\ \bottomrule
     \end{tabular}
     \caption{Fine-tuning timings on Baskerville.}
     \label{tab:fine-tune-bask}
 \end{table}
 
-As the number of GPUs increases, there is an increase in the compute time per iteration due to the additional overhead in moving data between nodes and GPUs. However, this is more than offset by the additional parallelism. Consequently, although we don't see linear scaling in the total run time, it's not far off and in practice this matches our expectations for both systems. Assuming cost is proportional to GPU hours, the ``Compute time per iteration'' below can be seen as a proxy for the cost of running the training. More GPUs, therefore, means relatively more cost. However, more GPUs also sees the real time per iteration decreasing, which can be seen as a proxy for the wall-clock time needed to complete the training. Unsurprisingly there is a cost-time trade-off.
+As the number of GPUs increases, there is an increase in the compute time per iteration due to the additional overhead in moving data between nodes and GPUs. However, this is more than offset by the additional parallelism. Consequently, although we don't see linear scaling in the total run time, it is not far off and in practice this matches our expectations for both systems. Assuming cost is proportional to GPU hours, the ``Compute time per iteration'' below can be seen as a proxy for the cost of running the training. More GPUs, therefore, means relatively more cost. However, more GPUs also sees the real time per iteration decreasing, which can be seen as a proxy for the wall-clock time needed to complete the training. Unsurprisingly there is a cost-time trade-off.
 
 As an aside, comparing the results for ``Wall-clock time per iteration'', we note that on Baskerville increasing distribution across nodes turns out to be more performant than increasing distribution across GPUs on the same node. The opposite is true on Dawn.
 
@@ -405,9 +419,9 @@ As an aside, comparing the results for ``Wall-clock time per iteration'', we not
 
 We collected metrics for the training runs using two nodes with four GPUs on each.
 
-In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit 100\%. Memory utilisation fluctuated but reached at least 76\% on the 80 GiB GPUs of Baskerville ({\it i.e.\/} 61 GiB per GPU).
+In this case Baskerville streaming multiprocessor utilisation captured using {\tt nvidia-smi}\ consistently hit \qty{100}{\percent}. Memory utilisation fluctuated but reached at least \qty{76}{\percent} on the 80 GiB GPUs of Baskerville (\ie\ 61 GiB per GPU).
 
-In comparison memory utilisation on Dawn consistently reached above 60\% with a maximum of 66.82\% ({\it i.e.\/} 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
+In comparison memory utilisation on Dawn consistently reached above \qty{60}{\percent} with a maximum of \qty{66.82}{\percent} (\ie\ 85.5 GiB per GPU). Due to access restrictions we were not able to capture processor utilisation on Dawn. Instead, we use GPU power consumption captured using {\tt xpu-smi}\ as a proxy for this. We explore energy usage in the next section.
 
 \subsubsection{Energy usage comparison}
 \label{section:energy-comparison}
@@ -416,35 +430,43 @@ For the same training exercise as in tables \ref{tab:fine-tune-Dawn} and \ref{ta
 
 Overall Dawn consumed between 3.3 times and 17.7 times more GPU energy than Baskerville for the same training exercise. This is driven by both higher mean power draw (between 1.9 and 3.9 times higher) and, in most configurations, longer elapsed time (between 0.85 and 3.26 times longer).
 
-In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (55\,267.94 J) and one node with one GPU total on Dawn (332\,511.66 J). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (181\,773.66 J) and four nodes with four GPUs total on Dawn (1\,355\,921.92 J).
+In terms of GPU energy usage, the lowest-energy configuration is one node with one GPU total on Baskerville (\qty{55267.94}{\joule}) and one node with one GPU total on Dawn (\qty{332511.66}{\joule}). The highest total energy occurs at two nodes with eight GPUs total on Baskerville (\qty{181773.66}{\joule}) and four nodes with four GPUs total on Dawn (\qty{1355921.92}{\joule}).
 
-For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (84.55 W) and four nodes with four GPUs total on Dawn (287.52 W), while the highest values occur at one node with one GPU total on both systems (209.15 W on Baskerville; 386.30 W on Dawn).
+For average power draw per GPU, the lowest values are at two nodes with eight GPUs total on Baskerville (\qty{84.55}{\watt}) and four nodes with four GPUs total on Dawn (\qty{287.52}{\watt}), while the highest values occur at one node with one GPU total on both systems (\qty{209.15}{\watt} on Baskerville; \qty{386.30}{\watt} on Dawn).
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 4
     \centering
     \hbadness=99999
-    \begin{tabular}{rr|rr}
-        \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{4.3cm}{\raggedleft Avg energy used per training run /J}& \parbox{3.2cm}{\raggedleft Avg power draw per GPU /W} \\ \hline
+    \begin{tabular}{@{}rrrr@{}}
+      \toprule
+      Nodes
+      & GPUs
+      & \shortstack[r]{Avg energy used\\ per training run ${}/\unit{\joule}$}
+      & \shortstack[r]{Avg power draw\\ per GPU ${}/\unit{\watt}$} \\ \midrule
         1 & 1 & 55\,267.94 & 209.15 \\
         1 & 4 & 118\,982.26 & 98.17 \\
         2 & 4 & 86\,393.69 & 120.83 \\
         4 & 4 & 76\,523.08 & 138.63 \\
-        2 & 8 & 181\,773.66 & 84.55 \\
+        2 & 8 & 181\,773.66 & 84.55 \\ \bottomrule
     \end{tabular}
     \caption{GPU energy usage for the same training exercise on Baskerville.}
     \label{tab:energy-bask}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 5
     \centering
-    \hbadness=99999
-    \begin{tabular}{rr|rr|r}
-        \parbox{1cm}{Nodes \\} & \parbox{1cm}{GPUs \\} & \parbox{4.3cm}{\raggedleft Avg energy used per training run /J}& \parbox{3.2cm}{\raggedleft Avg power draw per GPU /W} & \parbox{3.0cm}{\raggedleft Energy ratio \\ \,}\\ \hline
+ \begin{tabular}{@{}rrrrr@{}}
+      \toprule
+      Nodes
+      & GPUs
+      & \shortstack[r]{Avg energy used\\ per training run ${}/\unit{\joule}$}
+      & \shortstack[r]{Avg power draw\\ per GPU ${}/\unit{\watt}$}
+      & Energy ratio \\ \midrule
         1 & 1 & 332\,511.66 & 386.30 & 6.02 \\
         1 & 4 & 473\,221.48 & 364.58 & 3.98 \\
         2 & 4 & 761\,781.29 & 319.00 & 8.82 \\
         4 & 4 & 1\,355\,921.92 & 287.52 & 17.72 \\
-        2 & 8 & 598\,843.44 & 327.95 & 3.29 \\
+        2 & 8 & 598\,843.44 & 327.95 & 3.29 \\ \bottomrule
     \end{tabular}
     \caption{GPU energy usage for the same training exercise on Dawn. Energy ratio is Dawn energy divided by Baskerville energy.}
     \label{tab:energy-dawn}
@@ -461,12 +483,12 @@ To find out whether this device hierarchy had any performance penalty, we measur
 
 To do this, we created a range of smaller Aurora models by varying encoder and decoder depths using the \texttt{encoder\_depths} and \texttt{decoder\_depths} arguments, respectively. In each case, we also reduced the number embedding dimension to 256, the numbers of heads in encoder and decoder layers to (4, 8, 16) and (16, 8, 4), respectively, and number of heads in aggregation and de-aggregation blocks to 8. All other parameters were kept as default. We ran this code on 1 node using 1 GPU.
 
-Using encoder and decoder depths of $(x, x, x)$, an $x$ of 3 gives a model of roughly the same size as \texttt{AuroraSmall} (approx 300 MiB) and a value of 33 gives a model of roughly the same size as the standard Aurora (approx. 3 GiB). \textit{Flat} hierarchy ran out of memory for $x$ values of 14 and above.
+Using encoder and decoder depths of $(x, x, x)$, an $x$ of 3 gives a model of roughly the same size as \texttt{AuroraSmall} (approx 300 MiB) and a value of 33 gives a model of roughly the same size as the standard Aurora (approx.\ 3 GiB). \textit{Flat} hierarchy ran out of memory for $x$ values of 14 and above.
 
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.9\linewidth]{diagrams/flat-vs-composite.pdf}
-    \caption{Backprop Time {\it vs.\/} Model Size}
+    \caption{Backprop Time \textit{vs.}\ Model Size}
     \label{fig:backprop-timings}
 \end{figure}
 
@@ -478,13 +500,18 @@ We ran single-GPU fine-tuning with unsharded FSDP using 1, 2 and 4 GPUs. As befo
 
 Results are shown in Table \ref{tab:flat-vs-composite-Dawn}. Note these are not directly comparable to the timings shown in Figure \ref{fig:backprop-timings}, which only relate to back propagation. From the table we can see that training using one tile and \textit{flat} hierarchy is up to twice as fast as using one full GPU with \textit{composite} device hierarchy. Likewise, using two tiles and \textit{flat} hierarchy is approximately twice as fast as using two full GPUs with \textit{composite} device hierarchy. This supports the results seen in Figure \ref{fig:backprop-timings}, which suggest that \textit{flat} device hierarchy results in double the training speed versus \textit{composite} hierarchy. Comparing Dawn training speeds against those from Baskerville, we can see that when using \textit{composite} device hierarchy, training runs approximately 3 times slower than Baskerville and when using \textit{flat} device hierarchy, training on Dawn runs approximately 2 times slower than Baskerville when using the same number of devices.
 
-It's also worth noting that running on the 80 GiB A100 nodes on Baskerville, models of size $(20, 20, 20)$ or larger triggered out-of-memory errors. These models are technically smaller than the standard Aurora model but not directly comparable given the different structure resulting from changes to other parameters. The 128 GiB of memory available on the Intel GPUs in \textit{composite} mode allowed larger model sizes to be supported without sharding.
+It is also worth noting that running on the 80 GiB A100 nodes on Baskerville, models of size $(20, 20, 20)$ or larger triggered out-of-memory errors. These models are technically smaller than the standard Aurora model but not directly comparable given the different structure resulting from changes to other parameters. The 128 GiB of memory available on the Intel GPUs in \textit{composite} mode allowed larger model sizes to be supported without sharding.
 
-\begin{table}[t]
+\begin{table}[t] %% EDITOR: Table 6
     \centering
-    \hbadness=99999
-    \begin{tabular}{rrr|rrr}
-          \parbox{1cm}{GPUs \\} & \parbox{1cm}{Devices \\} & \parbox{1.5cm}{\raggedleft Hierarchy \\ \hfill} & \parbox{3.0cm}{\raggedleft Compute time per iteration /s} & \parbox{3.0cm}{\raggedleft Wall-clock time per iteration /s} & \parbox{2.0cm}{\raggedleft Total run time /s} \\ \hline
+    \begin{tabular}{@{}rrlrrr@{}}
+      \toprule
+      GPUs
+      & Devices
+      & Hierarchy
+      & \shortstack[r]{Compute time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Wall-clock time\strut \\ per iteration ${}/\unit{\second}$}
+      & \shortstack[r]{Total\strut \\ run time ${}/\unit{\second}$} \\ \midrule
           1  & 1&\textit{flat}& 6.86& 6.86& 257.43\\
   1& 2& \textit{flat}& 7.84& 3.92&176.54\\
           4& 4&\textit{flat}& 8.13& 2.03& 122.72\\
@@ -494,7 +521,7 @@ It's also worth noting that running on the 80 GiB A100 nodes on Baskerville, mod
           4& 4&\textit{composite}& 11.54& 2.89& 152.56\\
   1& 1& N/A (Bask)& 3.20& 3.20&145.53\\
   2& 2& N/A (Bask)& 3.25& 1.62&104.85\\
-  4& 4& N/A (Bask)&  3.29& 0.82&81.72\\
+  4& 4& N/A (Bask)&  3.29& 0.82&81.72\\ \bottomrule
     \end{tabular}
     \caption{Comparison of fine-tuning timings on Dawn using 1 node and \textit{flat vs. composite} hierarchies and Baskerville.}
     \label{tab:flat-vs-composite-Dawn}
@@ -508,7 +535,7 @@ More information on multi-stack architectures can be found in the Intel oneAPI o
 
 \subsubsection{Fully Sharded Data Parallel (FSDP)}
 
-With the \texttt{FULL\_SHARD} strategy, we have been able to reduce maximum GPU memory utilisation from approximately 66\% to 55\%. This uses a \texttt{ModuleWrapPolicy} to shard the encoder/decoder layers.
+With the \texttt{FULL\_SHARD} strategy, we have been able to reduce maximum GPU memory utilisation from approximately \qty{66}{\percent} to \qty{55}{\percent}. This uses a \texttt{ModuleWrapPolicy} to shard the encoder/decoder layers.
 
 Attempts to shard more layer types have been found to give errors such as ``Inconsistent compute device and \texttt{device\_id} on rank 1: xpu:0 vs xpu:1''.  Attempts to use FSDPv2's \texttt{fully\_shard} wrapper function have resulted in \texttt{UR\_RESULT\_ERROR\_OUT\_OF\_RESOURCES} errors. Therefore, some further work is needed to understand how much more optimisation can be found with model and optimiser sharding.
 
@@ -540,12 +567,13 @@ To compare platforms, we generated random tensors and pushed them to the GPU, wi
 
 \begin{table}[t]
     \centering
-    \hbadness=99999
-    \begin{tabular}{rrr}
-         Tensor Size (MiB) & Dawn Bandwidth (MiB/s) & Bask Bandwidth (MiB/s) \\ \hline
+    \begin{tabular}{@{}rrr@{}} \toprule
+      \shortstack[r]{Tensor Size\\ (MiB)}
+      & \shortstack[r]{Dawn Bandwidth\\ (MiB/s)}
+      & \shortstack[r]{Bask Bandwidth\\ (MiB/s)} \\ \midrule
           1 & 6\,162 & 3\,939 \\
   128 & 43\,620 & 9\,846\\
-          1024 & 46\,876 & 10\,645\\
+          1024 & 46\,876 & 10\,645\\ \bottomrule
     \end{tabular}
     \caption{Comparison of CPU to GPU/XPU bandwidth.}
     \label{tab:xpu-gpu-bandwidth}
@@ -555,11 +583,13 @@ Using the \texttt{dd} command to read ERA5 files gives us some sense of the file
 
 \begin{table}[t]
     \centering
-    \hbadness=99999
-    \begin{tabular}{rrrr}
-         \parbox{3cm}{File Size (MiB) \\ \,} & \parbox{3cm}{Cached (Y/N) \\ \,} & \parbox{3.5cm}{Dawn Bandwidth (GiB/s)} &  \parbox{3.3cm}{Bask Bandwidth (GiB/s)} \\ \hline
+    \begin{tabular}{@{}rrrr@{}} \toprule
+        \shortstack[r]{File Size\\ (MiB)} 
+      & \shortstack[r]{Cached\\ (Y/N)} 
+      & \shortstack[r]{Dawn Bandwidth\\ (GiB/s)}
+      & \shortstack[r]{Bask Bandwidth\\ (GiB/s)} \\ \midrule
            423 & N & 0.5 & 1.7 \\
-   423 & Y & 7 & 5.5 \\
+   423 & Y & 7 & 5.5 \\ \bottomrule
     \end{tabular}
     \caption{Comparison of file-system bandwidth.}
     \label{tab:file-system-bandwidth}
@@ -569,9 +599,10 @@ Using the \texttt{dd} command to read ERA5 files gives us some sense of the file
 
 Using an ERA5 dataset containing 7 days' worth of data, we tested the time it took to load data first to RAM and then to GPU/XPU.
 
-On Dawn, with device hierarchy set to \textit{composite}, we found that loading this dataset from disk (Lustre) to RAM took 25.6 seconds, roughly equivalent to 3.4 GiB / 25.6 s = 0.13 GiB s\textsuperscript{-1}. The average time to move each batch of training data from RAM to XPU was 0.0002 seconds, giving a total time of 0.0002 $\times$ 28 = 0.0056 s for all batches. This is roughly equivalent to 3.4 GiB / 0.0056 s = 607 GiB s\textsuperscript{-1} (assuming the full dataset is used during training).
+On Dawn, with device hierarchy set to \textit{composite}, we found that loading this dataset from disk (Lustre) to RAM took 25.6 seconds, roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{25.6}{\second} = \qty{0.13}{\gibi\byte\per\second}$. The average time to move each batch of training data from RAM to XPU was 0.0002 seconds, giving a total time of 0.0002 $\times$ 28 = 0.0056 s for all batches. This is roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{0.0056}{\second}
+= \qty{607}{\gibi\byte\per\second}$ (assuming the full dataset is used during training).
 
-On Baskerville, we found that loading this dataset from disk to RAM took 37.3 seconds, roughly equivalent to 3.4 GiB / 37.3 seconds = 0.09 GiB s\textsuperscript{-1}. The average time to move each batch of training data from RAM to GPU was 0.082 s, giving a total time of 0.082 $\times$ 28 = 2.296 s for all batches. This is roughly equivalent to 3.4 GiB / 2.296 s = 1.48 GiB s\textsuperscript{-1} (assuming the full dataset is used during training).
+On Baskerville, we found that loading this dataset from disk to RAM took 37.3 seconds, roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{37.3}{\second} = \qty{0.09}{\gibi\byte\per\second}$. The average time to move each batch of training data from RAM to GPU was 0.082 s, giving a total time of 0.082 $\times$ 28 = 2.296 s for all batches. This is roughly equivalent to $\qty{3.4}{\gibi\byte} / \qty{2.296}{\second} = \qty{1.48}{\gibi\byte\per\second}$ (assuming the full dataset is used during training).
 
 These timings suggest data transfer both from disk to RAM and from RAM to GPU/XPU are faster on Dawn, in agreement with the results above. Notably, however, RAM to XPU transfer times seem to be approximately 410 times quicker on Dawn versus Baskerville. This may suggest an error in our code or calculation of RAM to XPU transfer time as this seems exceedingly fast.
 
@@ -625,15 +656,15 @@ The results are interesting because we see Dawn accumulating greater errors comp
 \caption{\label{fig:error-comparison-dev-mad-1024x1024-s42} RMSE for $1024 \times 1024$ matrix multiply and add operations with various precisions on GPU.}
 \end{figure}
 
-It's worth reiterating that the operations were arranged so that the elements of the matrix roughly double in size every 128 steps (four times during the full 512 steps shown). We might reasonably expect this doubling in size to coincide with jumps in the error rate, given that this corresponds to the exponent value increasing by one binary digit. However, these jumps are not noticeably present in the plots. This potentially suggests they are masked by the randomisation.
+It is worth reiterating that the operations were arranged so that the elements of the matrix roughly double in size every 128 steps (four times during the full 512 steps shown). We might reasonably expect this doubling in size to coincide with jumps in the error rate, given that this corresponds to the exponent value increasing by one binary digit. However, these jumps are not noticeably present in the plots. This potentially suggests they are masked by the randomisation.
 
 We would also expect greater errors to be introduced during the addition operation rather than the multiplication operation, especially as the values in $A$ start to fall outside the range of the significand for the given floating point format (in contrast multiplication can compensate relatively by adjusting the exponent).
 
 For \bfhalf\ matrix operations we see almost identical results between Dawn and Baskerville.
 
-Given these results it's perhaps most surprising that we see identical cumulative errors for \bfhalf\ across the two GPUs. It could be that Dawn and Baskerville use different algorithms for \fphalf\ and \fpsingle, but identical or very similar algorithms for \bfhalf.
+Given these results it is perhaps most surprising that we see identical cumulative errors for \bfhalf\ across the two GPUs. It could be that Dawn and Baskerville use different algorithms for \fphalf\ and \fpsingle, but identical or very similar algorithms for \bfhalf.
 
-To investigate further we ran the same calculations, but this time multiplying and adding a {\it different\/} pair of matrices at each step. Our results are shown in Figure \ref{fig:error-comparison-dev-mad-fuzz-1024x1024}.
+To investigate further we ran the same calculations, but this time multiplying and adding a \textit{different\/} pair of matrices at each step. Our results are shown in Figure \ref{fig:error-comparison-dev-mad-fuzz-1024x1024}.
 
 While the \fpsingle\ and \bfhalf\ results remain similar, the \fphalf\ results show a different behaviour. The errors are still erratic but now the discrepancy between the two systems appears to be masked by the randomness. Moreover, the overall pattern is that the results align most closely with the results from Dawn in the previous run.
 
@@ -655,7 +686,7 @@ We also collected timing measurements for the runs. We did this using flat tilin
 
 \section{Broader experiences using Dawn}
 
-Performance and accuracy are two of the most important factors when comparing High Performance Computing systems. However they are not the only factors. In this section we discuss other factors that are less amenable to measurement, but which are nevertheless important when considering which High Performance Computing system to make use of.
+Performance and accuracy are two of the most important factors when comparing High Performance Computing systems. However they are not the only factors. In this section we discuss other factors that are less amenable to measurement, but which are nevertheless important when considering which High Performance Computing system to use.
 
 \subsection{Summary}
 
@@ -674,10 +705,11 @@ In the remainder of this section we will go on to show the following results.
 
 Our experience with support from the Dawn team has generally been excellent. Communication was offered through multiple channels, including periodic drop-in sessions with the technical team and a dedicated Slack channel. The support team were responsive, accepting our requests to meet and also reaching out to us directly for feedback.
 
-It's clear that the Dawn team are keen for users to get the most from the system and realise that, given users are less likely to be familiar with an Intel-based GPU system, they may require additional support in deploying workloads.
+It is clear that the Dawn team are keen for users to get the most from the system and realise that, given users are less likely to be familiar with an Intel-based GPU system, they may require additional support in deploying workloads.
 
 \printbibliography
 
+\newpage
 \appendix
 
 \appendixpage
@@ -738,15 +770,19 @@ The results for these calculations are detailed in Table \ref{tab:timing-mann-wh
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{rr|rr|rrrr}
-        & & \multicolumn{2}{c|}{Average time per step (s)} & & & & \\ \hline
-        Nodes & GPUs & {\tt rhel8} & {\tt rhel9} & \parbox{1cm}{\raggedleft $U_1$} & \parbox{1cm}{\raggedleft $U_2$} & \parbox{1cm}{\raggedleft $U$} & Reject $H_0$? \\ \hline
+    \begin{tabular}{@{}rr@{\hskip 3em}rr@{\hskip 3em}rrrr@{}}\toprule
+      & & \multicolumn{2}{c@{\hskip 3em}}{Average time per step (s)} & & & & \\
+      Nodes
+      & GPUs
+      & {\tt rhel8}
+      & {\tt rhel9}
+      & $U_1$ & $U_2$ & $U$ & Reject $H_0$? \\ \midrule
         1 & 1 & 18.095136 & 18.072201 & 51 & 69 & 51 & No \\
         1 & 4 & 17.780439 & 17.765742 & 61 & 59 & 59 & No \\
         2 & 4 & 19.662787 & 19.823019 & 74 & 46 & 46 & No \\
         2 & 8 & 20.016892 & 20.399696 & 63 & 57 & 57 & No \\
         4 & 4 & 19.664436 & 19.678372 & 61 & 59 & 59 & No \\
-        4 & 8 & 19.907159 & 20.116596 & 94 & 26 & 26 & No \\
+        4 & 8 & 19.907159 & 20.116596 & 94 & 26 & 26 & No \\ \bottomrule
     \end{tabular}
     \caption{Mann Whitney U Test calculations comparing the times for runs using the {\tt rhel8} and {\tt rhel9} modules}
     \label{tab:timing-mann-whitney}
@@ -769,12 +805,12 @@ Table \ref{tab:fpwidths} summarises the widths of the sections within each float
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rrrr} \hline
-        Format & Full width & Sign bit width & Significand width & Exponent width \\ \hline
+    \begin{tabular}{@{}lrrrr@{}} \toprule
+        Format & Full width & Sign bit width & Significand width & Exponent width \\ \midrule
         \fpdouble & 64 & 1 & 52 & 11 \\
         \fpsingle & 32 & 1 & 23 & 8 \\
         \fphalf & 16 & 1 & 10 & 5 \\
-        \bfhalf & 16 & 1 & 7 & 8 \\
+        \bfhalf & 16 & 1 & 7 & 8 \\ \bottomrule
     \end{tabular}
     \caption{Widths of the sections within floating point representations.}
     \label{tab:fpwidths}
@@ -804,7 +840,11 @@ a_{i, j} &\in [ a - 0.001, a + 0.001) \\
 m_{i, j} &\in [ m - 0.001, m + 0.001)
 \end{align*}
 
-The aim is to have the mean values of the $a_{i, j}$ and $m_{i, j}$ be $a$ and $m$ respectively. We select $a$ to be relatively small compared to the scale of the elements in the result matrix, in order that the binary exponent of $a$ falls outside the range of the result it's to be added to during the addition step. This maximises the opportunity for errors.
+The aim is to have the mean values of the $a_{i, j}$ and $m_{i, j}$ be
+$a$ and $m$ respectively. We select $a$ to be relatively small
+compared to the scale of the elements in the result matrix, in order
+that the binary exponent of $a$ falls outside the range of the result
+it is to be added to during the addition step. This maximises the opportunity for errors.
 
 Due to the nature of matrix multiplication, if $r_i$ is the average for the elements in the result matrix $R_i$ at step $i$, then $r_{i + 1}$ would take the following approximate value:
 $$
@@ -889,7 +929,7 @@ $$
 $$
 steps, which we can see very clearly to be the case from the graph. Using the same reasoning, for \fphalf\ format values this would happen after $2^{11} = 2048$ steps and for \fpsingle\ format values after $2^{24} = 16777216$ steps. In both of these latter two cases the graph isn't wide enough for them to appear.
 
-Interestingly it's the case of multiplication that most closely matches our results for the multiply-and-add case. We can see this in Figure \ref{fig:error-comparison-dev-mul-1024x1024}, which shows the errors following repeated multiplications without any addition steps. It appears to be the multiplication step where errors between the two systems are arising.
+Interestingly it is the case of multiplication that most closely matches our results for the multiply-and-add case. We can see this in Figure \ref{fig:error-comparison-dev-mul-1024x1024}, which shows the errors following repeated multiplications without any addition steps. It appears to be the multiplication step where errors between the two systems are arising.
 
 \begin{figure}[p]
 \centering
@@ -903,7 +943,7 @@ Interestingly it's the case of multiplication that most closely matches our resu
 \caption{\label{fig:error-comparison-dev-mul-1024x1024} RMSE for $1024 \times 1024$ matrix multiply operations on GPU.}
 \end{figure}
 
-\subsection{Flat \textit{vs.} Composite}
+\subsection{Flat \textit{vs.}\ Composite}
 \label{section:calcflatcomp}
 
 The matrix operations discussed here form the foundations for the more complex calculations of the Aurora model. A natural question is therefore whether we see similar timing differences to those seen when performing fine-tuning of the Aurora model as in Section \ref{section:modelsize}.
@@ -914,12 +954,12 @@ For the XPU results we ran using both Flat and Composite tiling modes in order t
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{ll|r} \hline
-        Device & Tile mode & Average time per step /s \\ \hline
+    \begin{tabular}{@{}llr@{}} \toprule
+        Device & Tile mode & Average time per step /s \\ \midrule
         CPU & Flat & 0.158091989 \\
         CPU & Composite & 0.155805938 \\
         XPU & Flat & 0.046537613 \\
-        XPU & Composite & 0.046697135 \\
+        XPU & Composite & 0.046697135 \\ \bottomrule
     \end{tabular}
     \caption{Time to run calculations using different configurations.}
     \label{tab:compflattimings}
@@ -944,33 +984,38 @@ Example output captured from the first run using composite tiling can be seen in
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rr} \hline
-        Precision & CPU & XPU \\ \hline
+    \begin{tabular}{@{}lll@{}} \toprule
+        Precision & CPU & XPU \\ \midrule
         \fpdouble & 0.01825869879179093 & 0.018258698791790956 \\
         \fpsingle & 0.018260332929492966 & 0.01826033927500248 \\
         \fphalf & 0.018260353010952034 & 0.0177001953125 \\
-        \bfhalf & 0.01826071641394276 & 0.0390625 \\
+        \bfhalf & 0.01826071641394276 & 0.0390625 \\ \bottomrule
     \end{tabular}
     \caption{Top left entry in the output matrix result using Composite tiling.}
     \label{tab:compresultsfirst}
 \end{table}
 
-The results for the two runs when running in composite were identical. Similarly the results for the two runs when running in flat were identical. However, in the \fpdouble\ case, the output from the XPU when running in Composite mode was very marginally different from the output when running in Flat mode, as can be seen in Table \ref{tab:flatresultsfirst}. It's not clear why this might be happening, but we note this is not an example of non-deterministic output, but rather differences due to different configurations.
+The results for the two runs when running in composite were
+identical. Similarly the results for the two runs when running in flat
+were identical. However, in the \fpdouble\ case, the output from the
+XPU when running in Composite mode was very marginally different from
+the output when running in Flat mode, as can be seen in Table
+\ref{tab:flatresultsfirst}. It is not clear why this might be happening, but we note this is not an example of non-deterministic output, but rather differences due to different configurations.
 
 \begin{table}[t]
     \centering
-    \begin{tabular}{l|rr} \hline
-        Precision & CPU & XPU \\ \hline
+    \begin{tabular}{@{}lll@{}} \toprule
+        Precision & CPU & XPU \\ \midrule
         \fpdouble & 0.01825869879179093 & 0.01825869879179094 \\
         \fpsingle & 0.018260332929492966 & 0.01826033927500248 \\
         \fphalf & 0.018260353010952034 & 0.0177001953125 \\
-        \bfhalf & 0.01826071641394276 & 0.0390625 \\
+        \bfhalf & 0.01826071641394276 & 0.0390625 \\ \bottomrule
     \end{tabular}
     \caption{Top left entry in the output matrix result using Flat tiling.}
     \label{tab:flatresultsfirst}
 \end{table}
 
-These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\textit{e.g.} Tensors being used uninitialised) rather than differences at the level of basic maths operations.
+These results tell us that the non-deterministic nature of the model was likely caused by higher level issues with the Torch code (\eg, tensors being used uninitialised) rather than differences at the level of basic maths operations.
 
 \subsection{Comparison with Aurora}
 \label{section:calccomparisonaurora}

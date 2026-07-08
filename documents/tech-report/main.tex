@@ -1,58 +1,59 @@
-\documentclass[12pt, a4paper]{article}
-%\usepackage[utf8]{inputenc}
-%\usepackage[T1]{fontenc}
-\usepackage{fontspec}
-\usepackage{euler-math}
-\setmainfont{cmunorm.otf}[
-   BoldFont =       cmunobx.otf,
-   ItalicFont =     cmunoti.otf,
-   BoldItalicFont = cmunobi.otf]
-\usepackage{amsmath}
+% -*- TeX-engine: luatex; -*-
+%% EDITOR: Adapted from the authors' file by removing formatting and
+%% commenting out most commands. 
+\documentclass[12pt]{article}
+\usepackage{ttr}
+% \setmainfont{cmunorm.otf}[
+%    BoldFont =       cmunobx.otf,
+%    ItalicFont =     cmunoti.otf,
+%    BoldItalicFont = cmunobi.otf]
+% \usepackage{amsmath}
 \usepackage{microtype}
 \usepackage{booktabs}
-\usepackage[sf, bf, small]{titlesec}
-\renewcommand{\baselinestretch}{1.1}
-% \DeclareFontSeriesDefault[rm]{bf}{sbc}
-% \usepackage{amssymb}
-%% Turing grid is 21 columns (of 1cm if we are using A4)
-%% Usually 4 "big columns", each of 4 text cols plus 1 gutter col;
-%% plus an additional gutter on the left.
-%% There is also a 10-column format, of 10x1cm columns, separated by 9
-%% gutters, with 1cm margins. We're using the first and last
-%% column-and-gutter as extra margin.  
-\usepackage[a4paper, left=3cm, right=3cm]{geometry}
-%\usepackage[Ragged, size=footnote, shape=up]{sidenotesplus}
-\setlength{\columnsep}{1cm}
+% \usepackage[sf, bf, small]{titlesec}
+% \renewcommand{\baselinestretch}{1.1}
+% \usepackage[a4paper, left=3cm, right=3cm]{geometry}
+% \setlength{\columnsep}{1cm}
 \usepackage{graphicx}
-%% 
-\usepackage[british]{babel}
-\usepackage{csquotes}
-\usepackage[backend=biber, sorting=none]{biblatex}
-%%
-%%
-%% Report 003, specific includes
-%%
-\addbibresource{bibliography.bib}
 \usepackage[hidelinks]{hyperref}
-\usepackage{array}
+% \usepackage{array}
 \usepackage{siunitx}
-\newcommand{\nvidia}{NVIDIA}
-\graphicspath{{figures/}{../draft/}}
-\newlength\figwidth
-\setlength\figwidth{11cm}
-\newlength\graphwidth
-\setlength\graphwidth{15cm}
+% \newcommand{\nvidia}{NVIDIA}
+% \newlength\figwidth
+% \setlength\figwidth{11cm}
+% \newlength\graphwidth
+% \setlength\graphwidth{15cm}
+%% ----------------------------------------------------------------------
+%% EDITOR: These may be required
+%\usepackage{csquotes}
+\usepackage[backend=biber, sorting=none]{biblatex}
+\usepackage[british]{babel}
+%
+%\graphicspath{{figures/}{../draft/}}
+% \usepackage[margin=1cm, font=small]{caption}
+%\DeclareCaptionLabelFormat{cont}{#1~#2 (\alph{ContinuedFloat})}
+%\input{styles}
+\addbibresource{bibliography.bib}
 %%
-\usepackage[margin=1cm, font=small]{caption}
-\DeclareCaptionLabelFormat{cont}{#1~#2 (\alph{ContinuedFloat})}
-%\captionsetup[ContinuedFloat]{labelformat=cont}
-%% 
+%% ----------------------------------------------------------------------
+%% EDITOR: Request by DLJ
+\setlength\parskip{1ex}
+\setlength{\parindent}{0pt}
+%% EDITOR: Incorporated from styles.tex
+\newcommand{\fpdouble}{\texttt{float64}}
+\newcommand{\fpsingle}{\texttt{float32}}
+\newcommand{\fphalf}{\texttt{float16}}
+\newcommand{\bfhalf}{\texttt{bfloat16}}
+%% EDITOR: To make changes easier!
+\newcommand{\ie}{i.e.}
+\newcommand{\eg}{e.g.}
+%%
+\graphicspath{{./diagrams}}
+\usepackage{listings}
+\usepackage{appendix}
+%% ----------------------------------------------------------------------=
 \title{}\author{}\date{}
-%%
-%%
-%% \usepackage[textwidth=2.5cm, textsize=small]{todonotes}
-%%
-\input{styles}
 \begin{document}
 \include{body.tex}
 \end{document}
+
